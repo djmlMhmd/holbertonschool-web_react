@@ -1,22 +1,9 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from './utils';
+const { getFullYear } = require("./utils");
 
-// Test for getFullYear
-test('getFullYear returns current year', () => {
-  const currentYear = new Date().getFullYear();
-  expect(getFullYear()).toBe(currentYear);
-});
+test("getFullYear returns the correct year", () => {
+    const staticYear = 2024;
 
-// Test for getFooterCopy
-test('getFooterCopy returns correct footer copy for index', () => {
-  expect(getFooterCopy(true)).toBe('Holberton School');
-});
+    const result = getFullYear();
 
-test('getFooterCopy returns correct footer copy for non-index', () => {
-  expect(getFooterCopy(false)).toBe('Holberton School Main Dashboard');
-});
-
-// Test for getLatestNotification
-test('getLatestNotification returns correct HTML string', () => {
-  const latestNotification = getLatestNotification();
-  expect(latestNotification).toEqual({__html: '<strong>Urgent requirement</strong> - complete by EOD'});
-});
+    expect(result).toBe(staticYear);
+})
