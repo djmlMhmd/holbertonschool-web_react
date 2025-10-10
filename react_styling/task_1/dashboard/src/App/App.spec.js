@@ -1,74 +1,121 @@
 import React from 'react';
-import { shallow, mount } from 'enzyme';
-import { jest } from '@jest/globals';
-import App from './App';
+import App from './App.jsx';
+import { render, screen } from '@testing-library/react';
 import { StyleSheetTestUtils } from 'aphrodite';
 
-describe('Test App.js', () => {
-  let wrapper;
+describe('App Component Tests', () => {
+    beforeEach(() => {
+        StyleSheetTestUtils.suppressStyleInjection();
+    });
 
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-    wrapper = shallow(<App />);
-  });
+    afterEach(() => {
+        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    });
 
-  it('Renders App without crashing', () => {
-    expect(wrapper.exists());
-  });
+    test('Renders Notifications component', () => {
+        render(<App />);
+        const notificationTitle = screen.getByText(/your notifications/i);
+        expect(notificationTitle).toBeInTheDocument();
+    });
 
-  it('App component contains Notifications component', () => {
-    expect(wrapper.find("Notifications")).toHaveLength(1);
-  });
+    test('Renders Header component', () => {
+        render(<App />);
+        const header = screen.getByText(/school dashboard/i);
+        expect(header).toBeInTheDocument();
+    });
 
-  it('App component contains Header component', () => {
-    expect(wrapper.find("Header")).toHaveLength(1);
-  });
+    test('Renders Login component', () => {
+        render(<App />);
+        const loginText = screen.getByText(/login to access the full dashboard/i);
+        expect(loginText).toBeInTheDocument();
+    });
 
-  it('App component contains Login component', () => {
-    expect(wrapper.find("Login")).toHaveLength(1);
-  });
+    test('Renders Footer component', () => {
+        render(<App />);
+        const footer = screen.getByText(/copyright/i);
+        expect(footer).toBeInTheDocument();
+    });
 
-  it('App component contains Footer component', () => {
-    expect(wrapper.find("Footer")).toHaveLength(1);
-  });
+    test('Should render the Login component', () => {
+        render(<App isLoggedIn={false} />);
 
-  it('test to check that CourseList is not displayed inside App', () => {
-    expect(wrapper.find("CourseList")).toHaveLength(0);
-  });
+        const loginText = screen.getByText(/login to access the full dashboard/i);
+        expect(loginText).toBeInTheDocument();
+
+        const courseList = screen.queryByText(/available courses/i);
+        expect(courseList).not.toBeInTheDocument();
+    });
+
+    test('Should render a CourseList component', () => {
+        render(<App isLoggedIn={true} />);
+
+        const courseList = screen.getByText(/available courses/i);
+        expect(courseList).toBeInTheDocument();
+
+        const loginText = screen.queryByText(/login to access the full dashboard/i);
+        expect(loginText).not.toBeInTheDocument();
+    });
+
+    test('Displays Course list title when isLoggedIn is true', () => {
+        render(<App isLoggedIn={true} />);
+
+        const courseListTitle = screen.getByRole('heading', { name: /course list/i });
+        expect(courseListTitle).toBeInTheDocument();
+    });
+
+    test('Displays Log in to continue title when isLoggedIn is false', () => {
+        render(<App isLoggedIn={false} />);
+
+        const loginTitle = screen.getByRole('heading', { name: /log in to continue/i });
+        expect(loginTitle).toBeInTheDocument();
+    });
+
+    test('Displays News from the School section by default', () => {
+        render(<App />);
+
+        const newsTitle = screen.getByRole('heading', { name: /news from the school/i });
+        expect(newsTitle).toBeInTheDocument();
+
+        const newsParagraph = screen.getByText(/holberton school news goes here/i);
+        expect(newsParagraph).toBeInTheDocument();
+    });
 });
 
-describe("Testing <App isLoggedIn={true} />", () => {
-  let wrapper;
+describe('App Keyboard Events Tests', () => {
+    let alertMock;
+    let logOutMock;
 
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-    wrapper = shallow(<App isLoggedIn={true}/>);
-  });
+    beforeEach(() => {
+        StyleSheetTestUtils.suppressStyleInjection();
+        alertMock = jest.spyOn(window, "alert").mockImplementation(() => { });
+        logOutMock = jest.fn();
+    });
 
-  it("the Login component is not included", () => {
-    expect(wrapper.find('Login')).toHaveLength(0);
-  });
+    afterEach(() => {
+        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+        alertMock.mockRestore();
+    });
 
-  it("the CourseList component is included", () => {
-    expect(wrapper.find('CourseList').exists());
-  });
-});
+    test("LogOut when ctrl + h", () => {
+        render(<App logOut={logOutMock} />);
 
-describe("Testing <App logOut={function} />", () => {
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-  });
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            key: "h",
+            ctrlKey: true,
+        });
+        document.dispatchEvent(keyboardEvent);
+        expect(logOutMock).toHaveBeenCalledTimes(1);
+    });
 
-  it("verify that when the keys control and h are pressed the logOut function, passed as a prop, is called and the alert function is called with the string Logging you out", () => {
-    const wrapper = mount(<App logOut={()=>{console.log("ctrl and h are pressed")}}/>);
-    window.alert = jest.fn();
-    const inst = wrapper.instance();
-    const logout = jest.spyOn(inst, 'logOut');
-    const alert = jest.spyOn(window, 'alert');
-    const event = new KeyboardEvent('keydown', {bubbles:true, ctrlKey: true, key: 'h'});
-    document.dispatchEvent(event);
-    expect(alert).toBeCalledWith("Logging you out");
-    expect(logout).toBeCalled();
-    alert.mockRestore();
-  });
+    test("Alert when ctrl + h", () => {
+        render(<App logOut={logOutMock} />);
+
+        const keyboardEvent = new KeyboardEvent("keydown", {
+            key: "h",
+            ctrlKey: true,
+        });
+        document.dispatchEvent(keyboardEvent);
+
+        expect(alertMock).toHaveBeenCalledWith("Logging you out");
+    });
 });

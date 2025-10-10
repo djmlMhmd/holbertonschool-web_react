@@ -1,22 +1,38 @@
-th {
-    border-bottom: 1px solid gray;
-    margin: 0;
-    padding: 0;
-    text-align: left;
+.CourseListContainer {
+    width: 100%;
+    height: 100%;
+    padding: 0 5rem;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-th:first-child {
+#CourseList {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#CourseList th {
     text-align: center;
 }
 
-table {
-    width: 90%;
-    border: 1px solid gray;
-    margin: auto;
-    margin-top: 40px;
-    padding: 0;
+#CourseList td {
+    text-align: left;
 }
 
-td {
-    padding-left: 3px;
+#CourseList th,
+#CourseList td {
+    padding: 0.20rem;
+    border: 1px solid black;
+}
+
+#CourseList th:first-child,
+#CourseList td:first-child {
+    width: 60%;
+}
+
+#CourseList th:last-child,
+#CourseList td:last-child {
+    width: 40%;
 }

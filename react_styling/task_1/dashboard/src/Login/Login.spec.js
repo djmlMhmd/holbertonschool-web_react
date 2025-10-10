@@ -1,25 +1,33 @@
 import React from 'react';
 import Login from './Login';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { StyleSheetTestUtils } from 'aphrodite';
 
-describe("testing the <Login /> component", () => {
-  let wrapper;
+beforeEach(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-  beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-    wrapper = shallow(<Login />);
-  });
+afterEach(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-  it("Login component renders without crashing", () => {
-    expect(wrapper).toBeDefined();
-  });
+test('renders 2 labels, 2 inputs and 1 button', () => {
+  const { container } = render(<Login />);
+  const labels = container.querySelectorAll('label');
+  const inputs = container.querySelectorAll('input');
+  expect(labels.length).toBe(2);
+  expect(inputs.length).toBe(2);
+  expect(screen.getByRole('button', { name: /ok/i })).toBeInTheDocument();
+});
 
-  it("Login component renders 2 input tags", () => {
-    expect(wrapper.find("input")).toHaveLength(2);
-  });
+test('focuses the input when its label is clicked', async () => {
+  const { container } = render(<Login />);
+  const user = userEvent.setup();
 
-  it("Login component renders 2 label tags", () => {
-    expect(wrapper.find("label")).toHaveLength(2);
-  });
+  const emailLabel = container.querySelector('label[for="email"]');
+  const emailInput = screen.getByLabelText(/email/i);
+
+  await user.click(emailLabel);
+  expect(emailInput).toHaveFocus();
 });

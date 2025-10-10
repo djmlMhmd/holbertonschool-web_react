@@ -1,49 +1,85 @@
 import React from 'react';
-import PropType from 'prop-types';
-import CourseShape from './CourseShape';
 import CourseListRow from './CourseListRow';
-import './CourseList.css';
-import {  StyleSheet, css } from 'aphrodite';
+import { StyleSheet, css } from 'aphrodite';
 
-function CourseList({ listCourses }) {
-  return (
-    <table id="CourseList" cellPadding="0" cellSpacing="0" className={css(courseListStyles.table)}>
-      <thead>
-        <CourseListRow isHeader={true} textFirstCell='Available courses' />
-        <CourseListRow isHeader={true} textFirstCell='Course name' textSecondCell="Credit" />
-      </thead>
-      <tbody>
-        {
-        listCourses.length == 0 ?
-          <CourseListRow isHeader={false} textFirstCell='No course available yet'/>
-        : null
+function CourseList({ courses = [] }) {
+    const styles = StyleSheet.create({
+        CourseListContainer: {
+            width: '100%',
+            height: '100%',
+            padding: '0 5rem',
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        CourseList: {
+            width: '100%',
+            borderCollapse: 'collapse',
+            // Styles pour les th
+            ':nth-child(1n) th': {
+                textAlign: 'center',
+                padding: '0.20rem',
+                border: '1px solid black'
+            },
+            // Styles pour les td
+            ':nth-child(1n) td': {
+                textAlign: 'left',
+                padding: '0.20rem',
+                border: '1px solid black'
+            },
+            // Première colonne (th et td)
+            ':nth-child(1n) th:first-child': {
+                width: '60%'
+            },
+            ':nth-child(1n) td:first-child': {
+                width: '60%'
+            },
+            // Dernière colonne (th et td)
+            ':nth-child(1n) th:last-child': {
+                width: '40%'
+            },
+            ':nth-child(1n) td:last-child': {
+                width: '40%'
+            }
         }
-        {
-          listCourses.map((val, idx) => {
-            return <CourseListRow isHeader={false} textFirstCell={val.name} textSecondCell={val.credit} key={val.id}/>
-          })
-        }
-      </tbody>
-    </table>
-  );
+    });
+
+    if (courses.length === 0) {
+        return (
+            <div className={css(styles.CourseListContainer)}>
+                <table className={css(styles.CourseList)}>
+                    <tbody>
+                        <CourseListRow textFirstCell="No course available yet" />
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+
+    return (
+        <div className={css(styles.CourseListContainer)}>
+            <table className={css(styles.CourseList)}>
+                <thead>
+                    <CourseListRow textFirstCell="Available courses" isHeader={true} />
+                    <CourseListRow
+                        textFirstCell="Course name"
+                        textSecondCell="Credit"
+                        isHeader={true}
+                    />
+                </thead>
+                <tbody>
+                    {courses.map(course => (
+                        <CourseListRow
+                            key={course.id}
+                            textFirstCell={course.name}
+                            textSecondCell={course.credit.toString()}
+                        />
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 }
-
-const courseListStyles = StyleSheet.create({
-	table: {
-		display: 'table',
-		border: '1px solid',
-		borderCollapse: 'collapse',
-		margin: '2rem auto 0 auto',
-		width: '90%',
-	}
-});
-
-CourseList.defaultProps = {
-  listCourses: []
-};
-
-CourseList.propType = {
-  listCourses: PropType.arrayOf(CourseShape)
-};
 
 export default CourseList;

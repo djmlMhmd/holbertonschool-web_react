@@ -1,54 +1,72 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { PureComponent, createRef } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
-class NotificationItem extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.selected_style = this.props.type === 'default' ?  itemStyles.default : itemStyles.urgent;
-  }
+const styles = StyleSheet.create({
+    default: {
+        color: 'blue',
+    },
+    urgent: {
+        color: 'red',
+    }
+});
 
-  render() {
-    return (
-      this.props.value ? 
-      <li
-      data-notification-type={this.props.type}
-      onClick={() => this.props.markAsRead(this.props.id)}
-      className={css(this.selected_style)}
-      >{this.props.value}</li> 
-      :
-      <li
-      data-notification-type={this.props.type}
-      dangerouslySetInnerHTML={this.props.html}
-      onClick={() => this.props.markAsRead(this.props.id)}
-      className={css(this.selected_style)}
-      ></li>
-    );
-  }
+class NotificationItem extends PureComponent {
+    constructor(props) {
+        super(props);
+        this.liRef = createRef();
+    }
+
+    handleClick = () => {
+        const { id, markAsRead } = this.props;
+        if (markAsRead) {
+            markAsRead(id);
+        }
+    }
+
+    containsHTML = (str) => {
+        return typeof str === 'string' && /<\/?[a-z][\s\S]*>/i.test(str);
+    };
+
+    render() {
+        const { type = 'default', html, value } = this.props;
+
+        const styleClass = type === 'urgent' ? styles.urgent : styles.default;
+
+        if (html) {
+            return (
+                <li
+                    ref={this.liRef}
+                    className={css(styleClass)}
+                    data-notification-type={type}
+                    dangerouslySetInnerHTML={html}
+                    onClick={this.handleClick}
+                />
+            );
+        }
+
+        if (value && this.containsHTML(value)) {
+            return (
+                <li
+                    ref={this.liRef}
+                    className={css(styleClass)}
+                    data-notification-type={type}
+                    dangerouslySetInnerHTML={{ __html: value }}
+                    onClick={this.handleClick}
+                />
+            );
+        }
+
+        return (
+            <li
+                ref={this.liRef}
+                className={css(styleClass)}
+                data-notification-type={type}
+                onClick={this.handleClick}
+            >
+                {value}
+            </li>
+        );
+    }
 }
-
-const itemStyles = StyleSheet.create({
-	urgent: {
-		color: 'red'
-	},
-
-	default: {
-		color: 'blue'
-	}
-})
-
-NotificationItem.defaultProps = {
-  type: 'default',
-  markAsRead: () => {},
-	id: 0
-};
-
-NotificationItem.propTypes = {
-  html: PropTypes.shape({__html: PropTypes.string}),
-  type: PropTypes.string.isRequired,
-  value: PropTypes.string,
-  markAsRead: PropTypes.func,
-  id: PropTypes.number
-};
 
 export default NotificationItem;

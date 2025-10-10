@@ -1,101 +1,171 @@
-import React from 'react';
-import Header from '../Header/Header';
-import Footer from '../Footer/Footer';
-import Notification from '../Notifications/Notifications';
-import Login from '../Login/Login';
-import CourseList from '../CourseList/CourseList';
-import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from '../BodySection/BodySection';
-import { getLatestNotification } from '../utils/utils';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { StyleSheet, css } from 'aphrodite';
+import Notifications from '../Notifications/Notifications';
+import Header from '../Header/Header';
+import Login from '../Login/Login';
+import Footer from '../Footer/Footer';
+import CourseList from '../CourseList/CourseList';
+import BodySection from '../BodySection/BodySection';
+import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
+import WithLogging from '../HOC/WithLogging';
+import { getLatestNotification } from "../utils/utils";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.logOut = props.logOut;
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+const LoginWithLogging = WithLogging(Login);
+const CourseListWithLogging = WithLogging(CourseList);
 
-    this.listCourses = [
-      { id: 1, name: 'ES6', credit: 60 },
-      { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 },
-    ];
-
-    this.listNotifications = [
-      { id: 1, value: "New course available", type: "default" },
-      { id: 2, value: "New resume available", type: "urgent" },
-      { id: 3, html: { __html: getLatestNotification() }, type: "urgent" },
-    ];
-  }
-
-  handleKeyDown(e) {
-    if (e.ctrlKey && e.key === 'h') {
-      e.preventDefault();
-      alert("Logging you out");
-      this.logOut();
+// Styles Aphrodite
+const styles = StyleSheet.create({
+  // Reset CSS global
+  reset: {
+    '*': {
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: 0,
+      scrollBehavior: 'smooth',
+    },
+    '*::before': {
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: 0,
+    },
+    '*::after': {
+      boxSizing: 'border-box',
+      margin: 0,
+      padding: 0,
     }
+  },
+  app: {
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  body: {
+    flex: 1,
+    padding: '20px',
+  },
+  footer: {
+    padding: '1rem',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+    fontSize: '0.8rem',
+    fontWeight: 200,
+    fontStyle: 'italic',
+    borderTop: '0.25rem solid #e1003c',
   }
+});
+
+class App extends Component {
+  static defaultProps = {
+    isLoggedIn: false,
+    logOut: () => { }
+  };
+
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === 'h') {
+      alert('Logging you out');
+      this.props.logOut();
+    }
+  };
 
   componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener("keydown", this.handleKeyDown);
+
+    const resetCSS = `
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        scroll-behavior: smooth;
+      }
+      
+      #root {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+    `;
+
+    const style = document.createElement('style');
+    style.textContent = resetCSS;
+    document.head.appendChild(style);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
 
   render() {
+    const { isLoggedIn = false } = this.props;
+
+    const notificationsList = [
+      {
+        id: 1,
+        type: "default",
+        value: "New course available"
+      },
+      {
+        id: 2,
+        type: "urgent",
+        value: "New resume available"
+      },
+      {
+        id: 3,
+        type: "urgent",
+        value: getLatestNotification()
+      }
+    ];
+
+    const coursesList = [
+      {
+        id: 1,
+        name: 'ES6',
+        credit: 60
+      },
+      {
+        id: 2,
+        name: 'Webpack',
+        credit: 20
+      },
+      {
+        id: 3,
+        name: 'React',
+        credit: 40
+      }
+    ];
+
     return (
-      <>
-        <Notification listNotifications={this.listNotifications} />
-        <div className={css(styles.app)}>
-          <Header />
-          {this.props.isLoggedIn ? (
+      <div className={css(styles.app)}>
+        <Notifications notifications={notificationsList} />
+
+        <Header />
+
+        <div className={css(styles.body)}>
+          {isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={this.listCourses} />
+              <CourseListWithLogging courses={coursesList} />
             </BodySectionWithMarginBottom>
           ) : (
             <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
+              <LoginWithLogging />
             </BodySectionWithMarginBottom>
           )}
+
           <BodySection title="News from the School">
-            <p>Random Text</p>
+            <p>Holberton School News goes here</p>
           </BodySection>
-          <div className={css(styles.footer)}>
-            <Footer />
-          </div>
         </div>
-      </>
+
+        <div className={css(styles.footer)}>
+          <Footer />
+        </div>
+      </div>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  app: {
-    position: 'relative',
-    minHeight: '100vh',
-  },
-  footer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderTop: '3px solid #E11D3F',
-    padding: '1rem',
-    fontStyle: 'italic',
-  },
-});
-
-App.defaultProps = {
-  isLoggedIn: false,
-  logOut: () => {},
-};
-
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
 
 export default App;

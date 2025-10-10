@@ -1,24 +1,21 @@
 import React from 'react';
 import Header from './Header';
-import { shallow } from 'enzyme';
+import { render, screen } from '@testing-library/react';
 
+test('renders img element', () => {
+    render(<Header />);
 
-describe('Testing <Header /> Component', () => {
-  let wrapper;
+    const imgElement = screen.getByAltText(/holberton logo/i);
 
-  beforeEach(() => {
-    wrapper = shallow(<Header />);
-  });
+    expect(imgElement).toBeInTheDocument();
+});
 
-  it("Renders with out crashing", () => {
-    expect(wrapper).toBeDefined();
-  });
+test('Renders h1 element with "School Dashboard text"', () => {
+    render(<Header />);
 
-  it("Render an h1 tag", () => {
-    expect(wrapper.find('h1')).toBeDefined();
-  });
-
-  it("Render an img tag", () => {
-    expect(wrapper.find('img')).toBeDefined();
-  });
+    const headingElement = screen.getByRole('heading', {
+        name: /school dashboard/i
+    });
+    
+    expect(headingElement).toBeInTheDocument();
 });

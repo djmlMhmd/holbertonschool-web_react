@@ -1,62 +1,63 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
-function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
-  const headerStyle = {backgroundColor: '#deb5b545'};
-  const rowStyle = {backgroundColor: '#f5f5f5ab'};
-  const selected_style = isHeader ? headerStyle : rowStyle;
-
-  return (
-    <tr style={selected_style}>
-      {isHeader ?
-        textSecondCell === null ?
-          <th colSpan="2" className={css(rowsStyles.thcenter)}>{textFirstCell}</th>
-        :
-          <>
-            <th className={css(rowsStyles.th)}>{textFirstCell}</th>
-            <th className={css(rowsStyles.th)}>{textSecondCell}</th>
-          </>
-      :
-        <>
-          <td className={css(rowsStyles.td)}>{textFirstCell}</td>
-          <td className={css(rowsStyles.td)}>{textSecondCell}</td>
-        </>
-      }
-    </tr>
-  );
-}
-
-const rowsStyles = StyleSheet.create({
-  thcenter: {
-    borderBottom: '1px solid gray',
-    margin: 0,
-    padding: 0,
-    textAlign: 'center'
-  },
-  th: {
-    borderBottom: '1px solid gray',
-    margin: 0,
-    padding: 0,
-    textAlign: 'left'
-  },
-  td: {
-    paddingLeft: 3
-  }
+const styles = StyleSheet.create({
+    headerRow: {
+        backgroundColor: '#deb5b545',
+    },
+    defaultRow: {
+        backgroundColor: '#f5f5f5ab',
+    },
+    thDefault: {
+        // Style par défaut pour les th
+    },
+    thColspan: {
+        // Style pour th avec colspan
+    },
+    tdCenter: {
+        textAlign: 'center',
+    },
+    tdEmpty: {
+        border: 'none',
+        width: '0%',
+    }
 });
 
-CourseListRow.defaultProps = {
-  isHeader: false,
-  textSecondCell: null
-};
+function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = null }) {
+    const rowStyleClass = isHeader ? styles.headerRow : styles.defaultRow;
 
-CourseListRow.propTypes = {
-  isHeader: PropTypes.bool,
-  textFirstCell: PropTypes.string,
-  textSecondCell: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ])
-};
+    if (isHeader === true) {
+        if (textSecondCell === null) {
+            return (
+                <tr className={css(rowStyleClass)}>
+                    <th className={css(styles.thColspan)} colSpan="2">{textFirstCell}</th>
+                </tr>
+            );
+        } else {
+            return (
+                <tr className={css(rowStyleClass)}>
+                    <th className={css(styles.thDefault)}>{textFirstCell}</th>
+                    <th className={css(styles.thDefault)}>{textSecondCell}</th>
+                </tr>
+            );
+        }
+    } else {
+        if (textSecondCell === null) {
+            return (
+                <tr className={css(rowStyleClass)}>
+                    <td className={css(styles.tdCenter)}>{textFirstCell}</td>
+                    <td className={css(styles.tdEmpty)}></td>
+                </tr>
+            );
+        } else {
+            return (
+                <tr className={css(rowStyleClass)}>
+                    <td>{textFirstCell}</td>
+                    <td>{textSecondCell}</td>
+                </tr>
+            );
+        }
+    }
+}
 
 export default CourseListRow;

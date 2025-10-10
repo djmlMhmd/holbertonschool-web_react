@@ -1,20 +1,18 @@
-:root {
-    --holberton-red: #e1484c;
-}
-
 .App-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: left;
-    border-bottom: 3px solid var(--holberton-red);
-    margin-top: 30px;
-}
-
-.App-header img {
-    width: 150px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border-bottom: 0.25rem solid #e1003c;
 }
 
 .App-header h1 {
-    margin: auto auto auto 0;
-    color: var(--holberton-red);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.025rem;
+  color: #e1003c;
+}
+
+.App-header img {
+  height: 15rem;
 }
