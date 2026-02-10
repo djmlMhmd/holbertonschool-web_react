@@ -1,4 +1,5 @@
 module.exports = {
+  ignorePatterns: ['fileTransformer.js'],
   env: {
     browser: true,
     es2021: true,
