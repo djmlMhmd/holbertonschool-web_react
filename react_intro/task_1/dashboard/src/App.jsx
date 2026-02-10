@@ -1,15 +1,10 @@
 import React from 'react';
-import logo from './assets/holberton-logo.jpg';
 import './App.css';
-import { getCurrentYear, getFooterCopy } from './utils';
-import Notifications from './Notifications';
+import logo from './assets/holberton-logo.jpg';
 
 function App() {
   return (
     <>
-      <div className="root-notifications">
-        <Notifications />
-      </div>
       <div className="App-header">
         <img src={logo} alt="holberton logo" />
         <h1>School dashboard</h1>
@@ -18,7 +13,7 @@ function App() {
         <p>Login to access the full dashboard</p>
       </div>
       <div className="App-footer">
-        <p>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
+        <p>Copyright {new Date().getFullYear()} - holberton School</p>
       </div>
     </>
   );
