@@ -1,5 +1,4 @@
 module.exports = {
-  ignorePatterns: ['fileTransformer.js'],
   env: {
     browser: true,
     es2021: true,
@@ -20,6 +19,7 @@ module.exports = {
   plugins: [
     'react',
   ],
+  ignorePatterns: ['fileTransformer.js', 'vite.config.mjs'],
   rules: {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
