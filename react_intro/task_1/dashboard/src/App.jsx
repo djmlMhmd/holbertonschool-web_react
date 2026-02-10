@@ -6,7 +6,7 @@ import Notifications from './Notifications';
 
 function App() {
   return (
-    <>
+    <div className="App">
       <div className="root-notifications">
         <Notifications />
       </div>
@@ -20,7 +20,7 @@ function App() {
       <div className="App-footer">
         <p>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
       </div>
-    </>
+    </div>
   );
 }
 
