@@ -31,7 +31,7 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "<rootDir>/src/setupTests.js"
+      "<rootDir>/setupTests.js"
     ],
     "testEnvironment": "jsdom",
     "moduleNameMapper": {
