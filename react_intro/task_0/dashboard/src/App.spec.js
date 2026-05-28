@@ -2,23 +2,26 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 import App from './App';
 
-test('renders App component', () => {
+test('renders the h1 element with the text School dashboard', () => {
   render(<App />);
 
-  // Test 1: Check if h1 element with "School Dashboard" is rendered
-  const h1Element = screen.getByRole('heading', { name: /School Dashboard/i });
+  const h1Element = screen.getByRole('heading', { name: /school dashboard/i });
   expect(h1Element).toBeInTheDocument();
+});
 
-  // Test 2: Check if img element is rendered (using alt text)
-  const imgElement = screen.getByAltText(/holberton logo/i);
-  expect(imgElement).toBeInTheDocument();
+test('renders the text content in the app body and footer paragraphs', () => {
+  render(<App />);
 
-  // Test 3: Check text content within the 2 p elements
-  // "Login to access the full dashboard"
   const loginText = screen.getByText(/Login to access the full dashboard/i);
   expect(loginText).toBeInTheDocument();
 
-  // "Copyright {year} - holberton School"
-  const copyrightText = screen.getByText(/Copyright \d{4} - holberton School/i);
+  const copyrightText = screen.getByText(/Copyright \d{4} - Holberton School/i);
   expect(copyrightText).toBeInTheDocument();
+});
+
+test('renders the Holberton logo image', () => {
+  render(<App />);
+
+  const imgElement = screen.getByAltText(/holberton logo/i);
+  expect(imgElement).toBeInTheDocument();
 });
