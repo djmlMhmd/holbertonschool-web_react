@@ -7,6 +7,7 @@ import Notifications from '../Notifications/Notifications';
 import CourseList from '../CourseList/CourseList';
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
 import BodySection from '../BodySection/BodySection';
+import { getLatestNotification } from '../utils/utils';
 import { StyleSheet, css } from "aphrodite/no-important";
 
 const styles = StyleSheet.create({
@@ -73,21 +74,26 @@ class  App extends React.Component {
   const { displayDrawer } = this.state;
   return (
     <Fragment>
-      <Notifications listNotifications={listNotifications}/>
-      <div className={css(styles['App'])}
-       displayDrawer={displayDrawer}
-       handleDisplayDrawer={this.handleDisplayDrawer}
-       handleHideDrawer={this.handleHideDrawer} />
+      <Notifications
+        listNotifications={listNotifications}
+        displayDrawer={displayDrawer}
+        handleDisplayDrawer={this.handleDisplayDrawer}
+        handleHideDrawer={this.handleHideDrawer}
+      />
+      <div className={css(styles['App'])}>
         <Header />
-        {this.props.isLoggedIn ? ( <BodySectionWithMarginBottom title="Course list"> <CourseList listCourses={listCourses}/> </BodySectionWithMarginBottom>)
-        :  (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <Login />
-            </BodySectionWithMarginBottom>
-          )}
-          <BodySection title="News from the School">
-            <p>it's the holidays!</p>
-          </BodySection>
+        {isLoggedIn ? (
+          <BodySectionWithMarginBottom title="Course list">
+            <CourseList listCourses={listCourses}/>
+          </BodySectionWithMarginBottom>
+        ) : (
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <Login />
+          </BodySectionWithMarginBottom>
+        )}
+        <BodySection title="News from the School">
+          <p>it's the holidays!</p>
+        </BodySection>
         <Footer className='App-footer' />
       </div>
     </Fragment>

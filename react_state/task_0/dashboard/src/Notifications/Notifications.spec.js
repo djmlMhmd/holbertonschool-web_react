@@ -195,3 +195,19 @@ describe('Test Notification.js', () => {
         wrapper.find('.button').simulate('click');
         expect(handleHideDrawerSpy).toHaveBeenCalled();
       })});
+
+  describe('clicking on menu item and close button', () => {
+    it('should call handleDisplayDrawer when clicking on the menu item', () => {
+      const handleDisplayDrawer = jest.fn();
+      const wrapper = shallow(<Notifications handleDisplayDrawer={handleDisplayDrawer} />);
+      wrapper.find('#menuItem').simulate('click');
+      expect(handleDisplayDrawer).toHaveBeenCalled();
+    });
+
+    it('should call handleHideDrawer when clicking on the close button', () => {
+      const handleHideDrawer = jest.fn();
+      const wrapper = shallow(<Notifications displayDrawer={true} handleHideDrawer={handleHideDrawer} />);
+      wrapper.find('[aria-label="Close"]').simulate('click');
+      expect(handleHideDrawer).toHaveBeenCalled();
+    });
+  });

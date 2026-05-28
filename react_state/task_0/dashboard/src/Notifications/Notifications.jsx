@@ -42,9 +42,15 @@ class  Notifications extends React.Component {
 
     return(
     <>
-        <div className={menu_item} Your notifications  onClick={handleDisplayDrawer} id='menuItem'/>
+        <div className={css(styles.menuItem)} onClick={handleDisplayDrawer} id='menuItem'>Your notifications</div>
       { displayDrawer && (
-        <div className={Notifications_style} >
+        <div className={css(styles.notificationsContainer)} >
+          <button className={css(styles.closeButton)} aria-label="Close" onClick={handleHideDrawer}>
+            <img
+            src={close} alt="close-icon"
+            style={{ height: '10px', width: '10px' }}
+            />
+          </button>
           {listNotifications.length > 0 ? (
             <Fragment>
             <p>Here is the list of notifications</p>
@@ -57,12 +63,6 @@ class  Notifications extends React.Component {
                 html={notification.html} />
               ))}
             </ul>
-            <button className={closeb} aria-label="Close" onClick={handleHideDrawer}>
-              <img
-              src={close} alt="close-icon"
-              style={{ height: '10px', width: '10px' }}
-              />
-            </button>
             </Fragment>
           ) : (<p>No new notification for now</p>)}
         </div>
@@ -73,70 +73,44 @@ class  Notifications extends React.Component {
 }
 
 
-Notifications.propTypes = {
-  displayDrawer: PropTypes.bool,
-  listNotifications: PropTypes.arrayOf(NotificationItemShape),
-  markAsRead: ()=>{},
-  id: NaN,
-};
-
 Notifications.defaultProps = {
   displayDrawer: false,
-  markAsRead: PropTypes.func,
-  id: PropTypes.number,
+  listNotifications: [],
+  handleDisplayDrawer: () => {},
+  handleHideDrawer: () => {},
 };
 
 const opacityKeyframes = {
-  from: {
-    opacity: 0.5,
-  },
-
-  to: {
-    opacity: 1,
-  },
+  from: { opacity: 0.5 },
+  to: { opacity: 1 },
 };
 
 const translateKeyframes = {
-  "0%": {
-    transform: "translateY(0)",
-  },
-
-  "50%": {
-    transform: "translateY(-5px)",
-  },
-
-  "100%": {
-    transform: "translateY(5px)",
-  },
+  "0%": { transform: "translateY(0)" },
+  "50%": { transform: "translateY(-5px)" },
+  "100%": { transform: "translateY(5px)" },
 };
-const Notifications_style = css({
-  position: 'relative',
-  width: '50px',
-  height: '50px',
-  border: '1px solid #E0434C',
-  borderRadius: '4px',
-  padding: '2rem',
-  '& ul li[data-priority="default"]': {
-      color: '#0000ff',
+
+const styles = StyleSheet.create({
+  notificationsContainer: {
+    position: 'relative',
+    border: '1px solid #E0434C',
+    borderRadius: '4px',
+    padding: '2rem',
   },
-  '& ul li[data-priority="urgent"]': {
-      color: '#ff0000',
-  }
-});
-
-const  menuItem = css({
-  hover: {
+  menuItem: {
     ':hover': {
-    cursor: "pointer",
-    animationName: [opacityKeyframes, translateKeyframes],
-    animationDuration: '1s, 500ms',
-    animationIterationCount: '3',
-  }},})
-
-const  closeb = css({
-  position: 'absolute',
-  top: '40px',
-  right: '20px'
+      cursor: 'pointer',
+      animationName: [opacityKeyframes, translateKeyframes],
+      animationDuration: '1s, 500ms',
+      animationIterationCount: '3',
+    },
+  },
+  closeButton: {
+    position: 'absolute',
+    top: '40px',
+    right: '20px',
+  },
 });
 
 export default Notifications;
