@@ -1,0 +1,5 @@
+.notification-items {
+  width: max-content;
+  border: 1px dashed #e1003c;
+  padding: 0.5rem 1rem;
+}
