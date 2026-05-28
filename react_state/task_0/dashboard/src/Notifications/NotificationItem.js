@@ -1,5 +1,5 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import { StyleSheet, css } from 'aphrodite';
 
 class NotificationItem extends React.PureComponent {
@@ -7,13 +7,13 @@ class NotificationItem extends React.PureComponent {
     const { type, html, value, markAsRead } = this.props;
   if (html === undefined) {
     return (
-      <li data-notification-type={ type } className={styles.defaultNotificationStyle}> 
+      <li data-notification-type={ type } className={css(styles.defaultNotificationStyle)}>
         { value }
       </li>
     );
   } else {
     return (
-      <li className={(styles.urgentNotificationStyle, styles.smallNotification)} data-notification-type={ type } dangerouslySetInnerHTML={ html }></li>
+      <li className={css(styles.urgentNotificationStyle, styles.smallNotification)} data-notification-type={ type } dangerouslySetInnerHTML={ html }></li>
     )
   }
 }
@@ -30,7 +30,7 @@ NotificationItem.defaultProps = {
   type: "default",
 }
 
-const styles = css({
+const styles = StyleSheet.create({
   defaultNotificationStyle: {
 		color: 'blue',
 	},
