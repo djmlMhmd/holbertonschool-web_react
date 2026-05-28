@@ -1,33 +1,45 @@
 body {
   margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .App-header {
-  border-bottom: 3px solid #e1003c;
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 1rem 2rem;
+  border-bottom: 3px solid #e1003c;
 }
 
-.App-header img {
-  height: 200px;
+.App-logo {
+  width: 200px;
+  height: auto;
 }
 
 .App-header h1 {
+  margin: 0 0 0 2rem;
   color: #e1003c;
-  margin-left: 50px;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .App-body {
-  padding: 50px;
-  height: 50vh;
+  flex: 1;
+  padding: 3rem 2rem;
 }
 
 .App-footer {
-  border-top: 3px solid #e1003c;
+  padding: 1rem 0 1.5rem;
   text-align: center;
   font-style: italic;
-  padding: 20px;
+  border-top: 3px solid #e1003c;
 }
