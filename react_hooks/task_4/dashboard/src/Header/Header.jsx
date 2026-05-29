@@ -70,14 +70,11 @@ function Header() {
 
       {user && user.isLoggedIn && (
         <div id="logoutSection" className={css(styles.logoutSection)}>
-          Welcome <b>{user.email}</b>
-          <a
+          Welcome <b>{user.email}</b> (<a
             href="#"
             className={css(styles.logoutLink)}
             onClick={handleLogoutClick}
-          >
-            (logout)
-          </a>
+          >logout</a>)
         </div>
       )}
     </header>

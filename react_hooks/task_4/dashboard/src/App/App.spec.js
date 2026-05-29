@@ -100,7 +100,7 @@ describe('App Component Tests', () => {
     await user.click(screen.getByRole('button', { name: /ok/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('(logout)')).toBeInTheDocument();
+      expect(screen.getByText('logout')).toBeInTheDocument();
       expect(screen.getByText(/welcome/i)).toBeInTheDocument();
     });
   });
@@ -114,10 +114,10 @@ describe('App Component Tests', () => {
     await user.click(screen.getByRole('button', { name: /ok/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('(logout)')).toBeInTheDocument();
+      expect(screen.getByText('logout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByText('(logout)'));
+    await user.click(screen.getByText('logout'));
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
@@ -261,10 +261,10 @@ describe('logOut state mutations', () => {
     await user.click(screen.getByRole('button', { name: /ok/i }));
 
     await waitFor(() => {
-      expect(screen.getByText('(logout)')).toBeInTheDocument();
+      expect(screen.getByText('logout')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByText('(logout)'));
+    await user.click(screen.getByText('logout'));
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
@@ -284,7 +284,7 @@ describe('logOut state mutations', () => {
       expect(screen.getByText(/test@example.com/i)).toBeInTheDocument();
     });
 
-    await user.click(screen.getByText('(logout)'));
+    await user.click(screen.getByText('logout'));
 
     await waitFor(() => {
       expect(screen.queryByText(/test@example.com/i)).not.toBeInTheDocument();
@@ -396,11 +396,11 @@ describe('Data Fetching', () => {
     });
 
     await waitFor(() => {
-      expect(screen.getByText('(logout)')).toBeInTheDocument();
+      expect(screen.getByText('logout')).toBeInTheDocument();
     });
 
     // Logout — user.isLoggedIn changes to false, triggering another courses fetch
-    await user.click(screen.getByText('(logout)'));
+    await user.click(screen.getByText('logout'));
 
     // courses.json is called again
     const coursesCalls = mockAxios.get.mock.calls.filter(
