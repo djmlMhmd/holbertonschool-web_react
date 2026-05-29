@@ -408,4 +408,57 @@ describe('Data Fetching', () => {
     );
     expect(coursesCalls.length).toBeGreaterThanOrEqual(2);
   });
+
+  test('notifications state is not re-fetched on login or logout', async () => {
+    render(<App />);
+    const user = userEvent.setup();
+
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockNotificationsData });
+      mockAxios.mockResponse({ data: [] }); // initial courses
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('New course available')).toBeInTheDocument();
+    });
+
+    const notifCallsAfterMount = mockAxios.get.mock.calls.filter(
+      call => call[0] === 'http://localhost:5173/notifications.json'
+    ).length;
+    expect(notifCallsAfterMount).toBe(1);
+
+    // Login
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
+
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockCoursesData });
+    });
+
+    await waitFor(() => { expect(screen.getByText('logout')).toBeInTheDocument(); });
+
+    // Notifications endpoint called exactly once (on mount only)
+    const notifCallsAfterLogin = mockAxios.get.mock.calls.filter(
+      call => call[0] === 'http://localhost:5173/notifications.json'
+    ).length;
+    expect(notifCallsAfterLogin).toBe(1);
+
+    // Logout
+    await user.click(screen.getByText('logout'));
+
+    await act(async () => {
+      mockAxios.mockResponse({ data: [] }); // courses after logout
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
+    });
+
+    // Notifications still not re-fetched
+    const notifCallsAfterLogout = mockAxios.get.mock.calls.filter(
+      call => call[0] === 'http://localhost:5173/notifications.json'
+    ).length;
+    expect(notifCallsAfterLogout).toBe(1);
+  });
 });
