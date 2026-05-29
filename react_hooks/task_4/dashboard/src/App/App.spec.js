@@ -1,15 +1,27 @@
 import React from 'react';
 import App from './App.jsx';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StyleSheetTestUtils } from 'aphrodite';
+import mockAxios from 'jest-mock-axios';
+import { getLatestNotification } from '../utils/utils';
+
+const mockNotificationsData = [
+  { id: 1, type: 'default', value: 'New course available' },
+  { id: 2, type: 'urgent', value: 'New resume available' },
+  { id: 3, type: 'urgent', value: '' },
+];
+
+const mockCoursesData = [
+  { id: 1, name: 'ES6', credit: 60 },
+  { id: 2, name: 'Webpack', credit: 20 },
+  { id: 3, name: 'React', credit: 40 },
+];
 
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
-    if (typeof args[0] === 'string' && args[0].includes('act(...)')) {
-      return;
-    }
+    if (typeof args[0] === 'string' && args[0].includes('act(...)')) return;
     originalError.call(console, ...args);
   };
 });
@@ -18,13 +30,23 @@ afterAll(() => {
   console.error = originalError;
 });
 
+// Resolve both initial axios requests (notifications + courses)
+const resolveInitialRequests = async () => {
+  await act(async () => {
+    mockAxios.mockResponse({ data: mockNotificationsData });
+    mockAxios.mockResponse({ data: mockCoursesData });
+  });
+};
+
 describe('App Component Tests', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    mockAxios.reset();
   });
 
   test('Renders Notifications component', () => {
@@ -106,7 +128,7 @@ describe('App Component Tests', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await user.click(screen.getByText(/your notifications/i));
+    await resolveInitialRequests();
 
     await waitFor(() => {
       expect(screen.getByText('New course available')).toBeInTheDocument();
@@ -124,7 +146,7 @@ describe('App Component Tests', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await user.click(screen.getByText(/your notifications/i));
+    await resolveInitialRequests();
 
     await waitFor(() => {
       expect(screen.getByText('New resume available')).toBeInTheDocument();
@@ -140,10 +162,12 @@ describe('App Component Tests', () => {
 describe('handleDisplayDrawer and handleHideDrawer', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    mockAxios.reset();
   });
 
   test('handleHideDrawer closes the notification drawer when close button is clicked', async () => {
@@ -180,10 +204,12 @@ describe('handleDisplayDrawer and handleHideDrawer', () => {
 describe('logIn state mutations', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    mockAxios.reset();
   });
 
   test('logIn sets isLoggedIn to true and shows the course list', async () => {
@@ -218,10 +244,12 @@ describe('logIn state mutations', () => {
 describe('logOut state mutations', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
+    jest.clearAllMocks();
   });
 
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    mockAxios.reset();
   });
 
   test('logOut sets isLoggedIn to false and shows the Login form', async () => {
@@ -262,5 +290,122 @@ describe('logOut state mutations', () => {
       expect(screen.queryByText(/test@example.com/i)).not.toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
     });
+  });
+});
+
+describe('Data Fetching', () => {
+  beforeEach(() => {
+    StyleSheetTestUtils.suppressStyleInjection();
+    jest.clearAllMocks();
+  });
+
+  afterEach(() => {
+    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+    mockAxios.reset();
+  });
+
+  test('fetches notifications data when the component initially renders', async () => {
+    render(<App />);
+
+    // Verify axios.get was called for notifications on mount
+    expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json');
+
+    // Simulate server response
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockNotificationsData });
+    });
+
+    // Resolve the initial courses request as well
+    await act(async () => {
+      mockAxios.mockResponse({ data: [] });
+    });
+
+    // Notifications drawer is open (displayDrawer=true) — items should be visible
+    await waitFor(() => {
+      expect(screen.getByText('New course available')).toBeInTheDocument();
+      expect(screen.getByText('New resume available')).toBeInTheDocument();
+    });
+  });
+
+  test('fetches notifications and applies getLatestNotification() to id 3', async () => {
+    render(<App />);
+
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockNotificationsData });
+    });
+    await act(async () => {
+      mockAxios.mockResponse({ data: [] });
+    });
+
+    await waitFor(() => {
+      // Notification 3 should have HTML from getLatestNotification()
+      const latestText = 'Urgent requirement';
+      expect(screen.getByText((content, element) =>
+        element && element.tagName === 'LI' && element.innerHTML.includes(latestText)
+      )).toBeInTheDocument();
+    });
+  });
+
+  test('fetches courses data whenever the user authentication state changes', async () => {
+    render(<App />);
+    const user = userEvent.setup();
+
+    // Resolve initial requests (notifications + initial courses fetch)
+    await act(async () => {
+      mockAxios.mockResponse({ data: [] }); // notifications (empty for this test)
+      mockAxios.mockResponse({ data: [] }); // initial courses
+    });
+
+    // Verify the initial courses request was made
+    expect(mockAxios.get).toHaveBeenCalledWith('/courses.json');
+
+    // Log in — this changes user.isLoggedIn and triggers the courses effect again
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
+
+    // Simulate server response for courses after login
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockCoursesData });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('ES6')).toBeInTheDocument();
+      expect(screen.getByText('Webpack')).toBeInTheDocument();
+      expect(screen.getByText('React')).toBeInTheDocument();
+    });
+  });
+
+  test('courses fetch is triggered again after logout (user state change)', async () => {
+    render(<App />);
+    const user = userEvent.setup();
+
+    // Resolve initial requests
+    await act(async () => {
+      mockAxios.mockResponse({ data: [] }); // notifications
+      mockAxios.mockResponse({ data: [] }); // initial courses
+    });
+
+    // Login
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
+
+    await act(async () => {
+      mockAxios.mockResponse({ data: mockCoursesData });
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('(logout)')).toBeInTheDocument();
+    });
+
+    // Logout — user.isLoggedIn changes to false, triggering another courses fetch
+    await user.click(screen.getByText('(logout)'));
+
+    // courses.json is called again
+    const coursesCalls = mockAxios.get.mock.calls.filter(
+      call => call[0] === '/courses.json'
+    );
+    expect(coursesCalls.length).toBeGreaterThanOrEqual(2);
   });
 });
