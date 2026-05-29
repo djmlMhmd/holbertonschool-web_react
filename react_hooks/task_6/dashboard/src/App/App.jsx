@@ -51,8 +51,7 @@ function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   // Notifications drawer.
-  const handleDisplayDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER, payload: true }), []);
-  const handleHideDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER, payload: false }), []);
+  const toggleDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER }), []);
 
   // User authentication.
   const handleLogin = useCallback((email, password) => {
@@ -123,8 +122,8 @@ function App() {
       <Notifications
         notifications={state.notifications}
         displayDrawer={state.displayDrawer}
-        handleDisplayDrawer={handleDisplayDrawer}
-        handleHideDrawer={handleHideDrawer}
+        handleDisplayDrawer={toggleDrawer}
+        handleHideDrawer={toggleDrawer}
         markNotificationAsRead={markNotificationReadById}
       />
 
