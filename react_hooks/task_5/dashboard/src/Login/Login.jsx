@@ -12,7 +12,7 @@ const Login = (props) => {
     handleChangeEmail,
     handleChangePassword,
     handleLoginSubmit,
-  } = useLogin({ onLogin: loginFunction });
+  } = useLogin(loginFunction);
 
   const emailRef = useRef();
   const passwordRef = useRef();
