@@ -308,7 +308,7 @@ describe('Data Fetching', () => {
     render(<App />);
 
     // Verify axios.get was called for notifications on mount
-    expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json');
+    expect(mockAxios.get).toHaveBeenCalledWith('http://localhost:5173/notifications.json');
 
     // Simulate server response
     await act(async () => {
@@ -357,7 +357,7 @@ describe('Data Fetching', () => {
     });
 
     // Verify the initial courses request was made
-    expect(mockAxios.get).toHaveBeenCalledWith('/courses.json');
+    expect(mockAxios.get).toHaveBeenCalledWith('http://localhost:5173/courses.json');
 
     // Log in — this changes user.isLoggedIn and triggers the courses effect again
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
@@ -404,7 +404,7 @@ describe('Data Fetching', () => {
 
     // courses.json is called again
     const coursesCalls = mockAxios.get.mock.calls.filter(
-      call => call[0] === '/courses.json'
+      call => call[0] === 'http://localhost:5173/courses.json'
     );
     expect(coursesCalls.length).toBeGreaterThanOrEqual(2);
   });
