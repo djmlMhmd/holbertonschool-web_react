@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, css } from 'aphrodite';
-import axios from 'axios';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -19,6 +18,12 @@ const notificationsList = [
   { id: 1, type: 'default', value: 'New course available' },
   { id: 2, type: 'urgent', value: 'New resume available' },
   { id: 3, type: 'urgent', html: { __html: getLatestNotification() } },
+];
+
+const coursesList = [
+  { id: 1, name: 'ES6', credit: 60 },
+  { id: 2, name: 'Webpack', credit: 20 },
+  { id: 3, name: 'React', credit: 40 },
 ];
 
 const styles = StyleSheet.create({
@@ -68,7 +73,7 @@ function App() {
   const [displayDrawer, setDisplayDrawer] = useState(true);
   const [user, setUser] = useState({ ...defaultUser });
   const [notifications, setNotifications] = useState(notificationsList);
-  const [courses, setCourses] = useState([]);
+  const [courses] = useState(coursesList);
 
   const handleDisplayDrawer = React.useCallback(() => { setDisplayDrawer(true); }, []);
   const handleHideDrawer = React.useCallback(() => { setDisplayDrawer(false); }, []);
@@ -94,38 +99,6 @@ function App() {
     user,
     logOut,
   }), [user, logOut]);
-
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const response = await axios.get('http://localhost:5173/notifications.json');
-        const rawData = response.data.notifications || response.data;
-        const notificationsData = rawData.map(notification => {
-          if (notification.id === 3) {
-            return { ...notification, html: { __html: getLatestNotification() } };
-          }
-          return notification;
-        });
-        setNotifications(notificationsData);
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
-      }
-    };
-    fetchNotifications();
-  }, []);
-
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await axios.get('http://localhost:5173/courses.json');
-        const coursesData = response.data.courses || response.data;
-        setCourses(coursesData);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      }
-    };
-    fetchCourses();
-  }, [user.isLoggedIn]);
 
   return (
     <newContext.Provider value={contextValue}>

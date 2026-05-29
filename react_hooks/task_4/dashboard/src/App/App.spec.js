@@ -1,26 +1,8 @@
 import React from 'react';
 import App from './App.jsx';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StyleSheetTestUtils } from 'aphrodite';
-
-jest.mock('axios', () => ({
-  get: jest.fn(() => Promise.resolve({ data: [] }))
-}));
-
-import axios from 'axios';
-
-const mockNotifications = [
-  { id: 1, type: 'default', value: 'New course available' },
-  { id: 2, type: 'urgent', value: 'New resume available' },
-  { id: 3, type: 'urgent', html: { __html: 'Urgent requirement - complete by EOD' } }
-];
-
-const mockCourses = [
-  { id: 1, name: 'ES6', credit: 60 },
-  { id: 2, name: 'Webpack', credit: 20 },
-  { id: 3, name: 'React', credit: 40 }
-];
 
 const originalError = console.error;
 beforeAll(() => {
@@ -39,73 +21,42 @@ afterAll(() => {
 describe('App Component Tests', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
-    jest.clearAllMocks();
-
-    axios.get.mockImplementation((url) => {
-      if (url.includes('notifications')) {
-        return Promise.resolve({ data: mockNotifications });
-      }
-      if (url.includes('courses')) {
-        return Promise.resolve({ data: mockCourses });
-      }
-      return Promise.resolve({ data: [] });
-    });
   });
 
   afterEach(() => {
     StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
   });
 
-  test('Renders Notifications component', async () => {
+  test('Renders Notifications component', () => {
     render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
   });
 
-  test('Renders Header component', async () => {
+  test('Renders Header component', () => {
     render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/school dashboard/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/school dashboard/i)).toBeInTheDocument();
   });
 
-  test('Renders Login component by default (not logged in)', async () => {
+  test('Renders Login component by default (not logged in)', () => {
     render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
-    });
-
+    expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: /course list/i })).not.toBeInTheDocument();
   });
 
-  test('Renders Footer component', async () => {
+  test('Renders Footer component', () => {
     render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/copyright/i)).toBeInTheDocument();
-    });
+    expect(screen.getByText(/copyright/i)).toBeInTheDocument();
   });
 
-  test('Displays News from the School section by default', async () => {
+  test('Displays News from the School section by default', () => {
     render(<App />);
-
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { name: /news from the school/i })).toBeInTheDocument();
-      expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument();
-    });
+    expect(screen.getByRole('heading', { name: /news from the school/i })).toBeInTheDocument();
+    expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument();
   });
 
   test('After a successful login, Course list is displayed and Login disappears', async () => {
     render(<App />);
     const user = userEvent.setup();
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    });
 
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'strongpass');
@@ -155,10 +106,6 @@ describe('App Component Tests', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await waitFor(() => {
-      expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
-    });
-
     await user.click(screen.getByText(/your notifications/i));
 
     await waitFor(() => {
@@ -193,17 +140,6 @@ describe('App Component Tests', () => {
 describe('handleDisplayDrawer and handleHideDrawer', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
-    jest.clearAllMocks();
-
-    axios.get.mockImplementation((url) => {
-      if (url.includes('notifications')) {
-        return Promise.resolve({ data: mockNotifications });
-      }
-      if (url.includes('courses')) {
-        return Promise.resolve({ data: mockCourses });
-      }
-      return Promise.resolve({ data: [] });
-    });
   });
 
   afterEach(() => {
@@ -214,9 +150,7 @@ describe('handleDisplayDrawer and handleHideDrawer', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
-    });
+    expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /close/i }));
 
@@ -228,10 +162,6 @@ describe('handleDisplayDrawer and handleHideDrawer', () => {
   test('handleDisplayDrawer shows the notification drawer when notification title is clicked', async () => {
     render(<App />);
     const user = userEvent.setup();
-
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: /close/i })).toBeInTheDocument();
-    });
 
     await user.click(screen.getByRole('button', { name: /close/i }));
 
@@ -250,17 +180,6 @@ describe('handleDisplayDrawer and handleHideDrawer', () => {
 describe('logIn state mutations', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
-    jest.clearAllMocks();
-
-    axios.get.mockImplementation((url) => {
-      if (url.includes('notifications')) {
-        return Promise.resolve({ data: mockNotifications });
-      }
-      if (url.includes('courses')) {
-        return Promise.resolve({ data: mockCourses });
-      }
-      return Promise.resolve({ data: [] });
-    });
   });
 
   afterEach(() => {
@@ -270,10 +189,6 @@ describe('logIn state mutations', () => {
   test('logIn sets isLoggedIn to true and shows the course list', async () => {
     render(<App />);
     const user = userEvent.setup();
-
-    await waitFor(() => {
-      expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-    });
 
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
     await user.type(screen.getByLabelText(/password/i), 'strongpass123');
@@ -303,17 +218,6 @@ describe('logIn state mutations', () => {
 describe('logOut state mutations', () => {
   beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
-    jest.clearAllMocks();
-
-    axios.get.mockImplementation((url) => {
-      if (url.includes('notifications')) {
-        return Promise.resolve({ data: mockNotifications });
-      }
-      if (url.includes('courses')) {
-        return Promise.resolve({ data: mockCourses });
-      }
-      return Promise.resolve({ data: [] });
-    });
   });
 
   afterEach(() => {
