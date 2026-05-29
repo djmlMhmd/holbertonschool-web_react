@@ -92,7 +92,7 @@ function App() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const response = await axios.get('/notifications.json');
+        const response = await axios.get('http://localhost:5173/notifications.json');
         const rawData = response.data.notifications || response.data;
         const notificationsData = rawData.map(notification => {
           if (notification.id === 3) {
@@ -111,7 +111,7 @@ function App() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get('/courses.json');
+        const response = await axios.get('http://localhost:5173/courses.json');
         const coursesData = response.data.courses || response.data;
         setCourses(coursesData);
       } catch (error) {
