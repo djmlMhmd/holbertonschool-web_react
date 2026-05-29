@@ -54,7 +54,7 @@ describe('App Component Tests', () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json');
+      expect(axios.get).toHaveBeenCalledWith('/notifications.json');
     });
 
     expect(screen.getByText(/school dashboard/i)).toBeInTheDocument();
@@ -69,13 +69,13 @@ describe('App Component Tests', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'strongpass');
     await user.click(screen.getByRole('button', { name: /ok/i }));
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/courses.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/courses.json'));
     await waitFor(() => screen.getByRole('heading', { name: /course list/i }));
 
     expect(screen.queryByRole('heading', { name: /log in to continue/i })).not.toBeInTheDocument();
@@ -85,7 +85,7 @@ describe('App Component Tests', () => {
     render(<App />);
     const user = userEvent.setup();
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'strongpass');
@@ -100,7 +100,7 @@ describe('App Component Tests', () => {
   test('Notifications are loaded from API', async () => {
     render(<App />);
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
     expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
   });
 
@@ -121,7 +121,7 @@ describe('App Component Tests', () => {
 
     render(<App />);
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
     await act(async () => new Promise((resolve) => setTimeout(resolve, 100)));
 
@@ -139,7 +139,7 @@ describe('Keyboard events', () => {
     const user = userEvent.setup();
     const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
 
-    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('http://localhost:3000/notifications.json'));
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
     await user.type(screen.getByLabelText(/email/i), 'user@example.com');
     await user.type(screen.getByLabelText(/password/i), 'strongpass');
