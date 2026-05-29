@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 class  App extends React.Component {
   constructor (props) {
     super(props);
-    this.handleKeydown = this.handleKeydown.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
     this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
     this.handleHideDrawer = this.handleHideDrawer.bind(this);
     this.state = {displayDrawer: false};
