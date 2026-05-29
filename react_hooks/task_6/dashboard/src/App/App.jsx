@@ -51,7 +51,8 @@ function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
   // Notifications drawer.
-  const toggleNotificationsDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER }), []);
+  const handleDisplayDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER, payload: true }), []);
+  const handleHideDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER, payload: false }), []);
 
   // User authentication.
   const handleLogin = useCallback((email, password) => {
@@ -77,7 +78,7 @@ function App() {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/notifications.json');
+        const res = await axios.get('/notifications.json');
         const notificationsList = (res.data.notifications || res.data).map((notif) => {
           if ((!notif.value && !notif.html) || notif.id === 3) {
             return { ...notif, html: { __html: getLatestNotification() } };
@@ -98,7 +99,7 @@ function App() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/courses.json');
+        const res = await axios.get('/courses.json');
         const coursesList = res.data.courses || res.data;
 
         dispatch({ type: APP_ACTIONS.SET_COURSES, payload: coursesList });
@@ -122,8 +123,8 @@ function App() {
       <Notifications
         notifications={state.notifications}
         displayDrawer={state.displayDrawer}
-        handleDisplayDrawer={toggleNotificationsDrawer}
-        handleHideDrawer={toggleNotificationsDrawer}
+        handleDisplayDrawer={handleDisplayDrawer}
+        handleHideDrawer={handleHideDrawer}
         markNotificationAsRead={markNotificationReadById}
       />
 
