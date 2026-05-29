@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
 import { StyleSheetTestUtils } from 'aphrodite';
+import { jest } from '@jest/globals';
+globalThis.jest = jest;
 
 // Configuration globale Jest
 beforeAll(() => {
