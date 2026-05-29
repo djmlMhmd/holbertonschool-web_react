@@ -54,11 +54,8 @@ export function appReducer(state = initialState, action) {
       };
 
     case APP_ACTIONS.TOGGLE_DRAWER:
-      // Toggle or force-set the notifications drawer.
-      return {
-        ...state,
-        displayDrawer: action.payload !== undefined ? action.payload : !state.displayDrawer,
-      };
+      // Toggle the notifications drawer.
+      return { ...state, displayDrawer: !state.displayDrawer };
 
     case APP_ACTIONS.MARK_NOTIFICATION_READ:
       // Remove notification by ID.
