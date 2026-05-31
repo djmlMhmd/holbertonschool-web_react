@@ -1,4 +1,4 @@
-import React from 'react';
+import { useContext } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import holbertonLogo from '../assets/holberton-logo.jpg';
 import { newContext } from '../Context/context';
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
 });
 
 function Header() {
-  const context = React.useContext(newContext);
+  const context = useContext(newContext);
   const { user, logOut } = context || {};
 
   const handleLogoutClick = (event) => {

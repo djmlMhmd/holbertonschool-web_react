@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import axios from 'axios';
 import Notifications from '../Notifications/Notifications';
@@ -64,14 +64,14 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [courses, setCourses] = useState([]);
 
-  const handleDisplayDrawer = React.useCallback(() => { setDisplayDrawer(true); }, []);
-  const handleHideDrawer = React.useCallback(() => { setDisplayDrawer(false); }, []);
+  const handleDisplayDrawer = useCallback(() => { setDisplayDrawer(true); }, []);
+  const handleHideDrawer = useCallback(() => { setDisplayDrawer(false); }, []);
 
-  const logOut = React.useCallback(() => {
+  const logOut = useCallback(() => {
     setUser({ ...defaultUser });
   }, []);
 
-  const logIn = React.useCallback((email, password) => {
+  const logIn = useCallback((email, password) => {
     setUser({
       email: email || '',
       password: password || '',
@@ -79,7 +79,7 @@ function App() {
     });
   }, []);
 
-  const markNotificationAsRead = React.useCallback((id) => {
+  const markNotificationAsRead = useCallback((id) => {
     console.log(`Notification ${id} has been marked as read`);
     setNotifications((prev) => prev.filter(item => item.id !== id));
   }, []);

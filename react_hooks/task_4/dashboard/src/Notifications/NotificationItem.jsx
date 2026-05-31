@@ -1,4 +1,4 @@
-import React, { memo, useRef } from 'react';
+import { memo, useRef } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
 const styles = StyleSheet.create({

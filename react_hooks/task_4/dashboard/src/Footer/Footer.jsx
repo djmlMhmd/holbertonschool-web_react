@@ -1,9 +1,9 @@
-import React from 'react';
+import { useContext } from 'react';
 import { getCurrentYear, getFooterCopy } from '../utils/utils';
 import { newContext } from '../Context/context';
 
 function Footer() {
-  const context = React.useContext(newContext);
+  const context = useContext(newContext);
   const { user, logOut } = context || {};
 
   return (
