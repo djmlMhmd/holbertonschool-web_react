@@ -4,7 +4,6 @@ import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StyleSheetTestUtils } from 'aphrodite';
 import mockAxios from 'jest-mock-axios';
-import { getLatestNotification } from '../utils/utils';
 
 const mockNotificationsData = [
   { id: 1, type: 'default', value: 'New course available' },
