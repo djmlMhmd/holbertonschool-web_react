@@ -1,4 +1,3 @@
-import React from 'react';
 import CourseListRow from './CourseListRow';
 import { StyleSheet, css } from 'aphrodite';
 

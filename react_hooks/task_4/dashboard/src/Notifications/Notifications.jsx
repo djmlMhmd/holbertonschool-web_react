@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import { memo } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 import NotificationItem from './NotificationItem';
 import closeButton from "../assets/close-button.png";
