@@ -28,6 +28,7 @@
     "@vitejs/plugin-react": "^4.6.0",
     "babel-jest": "^30.0.5",
     "eslint": "^9.30.1",
+    "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
@@ -39,11 +40,13 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "extensionsToTreatAsEsm": [".jsx"],
     "testTimeout": 10000,
     "maxWorkers": 1,
     "forceExit": true,
     "detectOpenHandles": false,
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
     "moduleNameMapper": {
       "^axios$": "jest-mock-axios",
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/fileTransformer.cjs",

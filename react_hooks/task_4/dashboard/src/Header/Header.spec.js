@@ -3,7 +3,7 @@ import Header from './Header';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { StyleSheetTestUtils } from 'aphrodite';
-import { newContext, defaultUser } from '../Context/context';
+import { newContext } from '../Context/context';
 
 describe('Header component', () => {
   beforeEach(() => {
