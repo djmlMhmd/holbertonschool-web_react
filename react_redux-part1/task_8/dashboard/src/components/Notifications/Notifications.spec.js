@@ -1,5 +1,5 @@
 // External libraries.
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -42,19 +42,17 @@ beforeEach(() => {
 * COMPONENT TESTS *
 ******************/
 
-test('Fetches and displays notification items on mount', async () => {
-  const store = createTestStore({ displayDrawer: true });
-  render(
+test('Displays notification items from store state', () => {
+  const store = createTestStore({ notifications: mockNotifications, displayDrawer: true });
+  const { getByText } = render(
     <Provider store={store}>
       <Notifications />
     </Provider>
   );
 
-  await waitFor(() => expect(store.getState().notifications.notifications).toHaveLength(3));
-  await waitFor(() => {
-    const state = store.getState().notifications;
-    expect(state.notifications[0].value).toBe('New course available');
-  });
+  expect(getByText('New course available')).toBeInTheDocument();
+  expect(getByText('New resume available')).toBeInTheDocument();
+  expect(getByText('Urgent requirement - complete by EOD')).toBeInTheDocument();
 });
 
 test('Sets displayDrawer to false when the close button is clicked', () => {
