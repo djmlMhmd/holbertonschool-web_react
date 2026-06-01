@@ -1,7 +1,7 @@
 // Components.
 import { getCurrentYear, getFooterCopy } from '../../utils/utils';
 
-function Footer({ user, logOut }) {
+function Footer({ user }) {
   return (
     <footer className='App-footer' style={{ textAlign: 'center' }}>
       {user.isLoggedIn && (

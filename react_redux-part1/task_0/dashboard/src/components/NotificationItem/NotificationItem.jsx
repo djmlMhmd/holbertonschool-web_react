@@ -1,5 +1,5 @@
 // External libraries.
-import React, { memo, useRef } from 'react';
+import { memo, useRef } from 'react';
 import { StyleSheet, css } from 'aphrodite';
 
 // Styles.

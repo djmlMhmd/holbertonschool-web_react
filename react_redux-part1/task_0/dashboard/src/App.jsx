@@ -1,5 +1,5 @@
 // External libraries.
-import React, { useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { StyleSheet, css } from 'aphrodite';
 
