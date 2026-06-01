@@ -1,14 +1,10 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 
 const WithLogging = (WrappedComponent) => {
   class WithLoggingComponent extends Component {
-    componentDidMount() {
-      const componentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-    }
+    componentDidMount() {}
 
-    componentWillUnmount() {
-      const componentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
-    }
+    componentWillUnmount() {}
 
     render() {
       return <WrappedComponent {...this.props} />;

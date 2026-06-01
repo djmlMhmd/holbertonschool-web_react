@@ -71,7 +71,7 @@ function App() {
     // dispatch({ type: 'TOGGLE_DRAWER' }); // À implémenter dans un slice séparé
   }, []);
 
-  const markNotificationReadById = useCallback((id) => {
+  const markNotificationReadById = useCallback(() => {
     // dispatch(markNotificationRead(id)); // À implémenter dans un slice séparé
   }, []);
 
@@ -88,13 +88,13 @@ function App() {
     const fetchNotifications = async () => {
       try {
         const res = await axios.get('http://localhost:3000/notifications.json');
-        const notificationsList = (res.data.notifications || res.data).map((notif) => {
+        const _notificationsList = (res.data.notifications || res.data).map((notif) => {
           if ((!notif.value && !notif.html) || notif.id === 3) {
             return { ...notif, html: { __html: getLatestNotification() } };
           }
           return notif;
         });
-        // dispatch(setNotifications(notificationsList)); // À implémenter
+        // dispatch(setNotifications(_notificationsList)); // À implémenter
       } catch (err) {
         console.error('Error fetching notifications:', err);
       }
@@ -108,8 +108,8 @@ function App() {
     const fetchCourses = async () => {
       try {
         const res = await axios.get('http://localhost:3000/courses.json');
-        const coursesList = res.data.courses || res.data;
-        // dispatch(setCourses(coursesList)); // À implémenter
+        const _coursesList = res.data.courses || res.data;
+        // dispatch(setCourses(_coursesList)); // À implémenter
       } catch (err) {
         console.error('Error fetching courses:', err);
       }

@@ -27,7 +27,7 @@ function convertHexToRGBA(hex) {
   return `rgba(${r}, ${g}, ${b}, 1)`;
 }
 
-global.convertHexToRGBA = convertHexToRGBA;
+globalThis.convertHexToRGBA = convertHexToRGBA;
 
 expect.extend({
   toHaveStyle(received, styles) {
@@ -42,7 +42,7 @@ expect.extend({
             const computedStyle = window.getComputedStyle(element);
             actualColor = computedStyle.color;
           }
-        } catch (e) {
+        } catch {
           actualColor = element.style?.color || null;
         }
 

@@ -1,6 +1,5 @@
 // External libraries.
-import React from 'react';
-import { render, fireEvent, cleanup } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StyleSheetTestUtils } from 'aphrodite';
 
