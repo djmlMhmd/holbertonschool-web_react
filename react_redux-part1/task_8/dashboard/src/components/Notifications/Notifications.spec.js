@@ -1,0 +1,97 @@
+// External libraries.
+import { render, fireEvent, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { StyleSheetTestUtils } from 'aphrodite';
+
+// Reducers.
+import notificationsReducer from '../../features/notifications/notificationsSlice';
+
+// Components.
+import Notifications from './Notifications';
+
+// Mock axios.
+jest.mock('axios');
+
+// Mock data.
+const mockNotifications = [
+  { id: 1, type: 'default', value: 'New course available' },
+  { id: 2, type: 'urgent', value: 'New resume available' },
+  { id: 3, type: 'urgent', value: 'Urgent requirement - complete by EOD' },
+];
+
+// Helper to build a test store with preloaded notifications state.
+const createTestStore = ({ notifications = [], displayDrawer = false } = {}) =>
+  configureStore({
+    reducer: { notifications: notificationsReducer },
+    preloadedState: { notifications: { notifications, displayDrawer } },
+  });
+
+// Suppress Aphrodite style injection.
+beforeAll(() => StyleSheetTestUtils.suppressStyleInjection());
+afterAll(() => StyleSheetTestUtils.clearBufferAndResumeStyleInjection());
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  axios.get.mockResolvedValue({ data: { notifications: mockNotifications } });
+});
+
+/******************
+* COMPONENT TESTS *
+******************/
+
+test('Fetches and displays notification items on mount', async () => {
+  const store = createTestStore({ displayDrawer: true });
+  render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  await waitFor(() => expect(store.getState().notifications.notifications).toHaveLength(3));
+  await waitFor(() => {
+    const state = store.getState().notifications;
+    expect(state.notifications[0].value).toBe('New course available');
+  });
+});
+
+test('Sets displayDrawer to false when the close button is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications, displayDrawer: true });
+  const { getByRole } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByRole('button', { name: /close/i }));
+  expect(store.getState().notifications.displayDrawer).toBe(false);
+});
+
+test('Sets displayDrawer to true when the title is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications, displayDrawer: false });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('Your notifications'));
+  expect(store.getState().notifications.displayDrawer).toBe(true);
+});
+
+test('Removes a notification from the list when marked as read', () => {
+  const store = createTestStore({ notifications: mockNotifications, displayDrawer: true });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('New course available'));
+
+  const remaining = store.getState().notifications.notifications;
+  expect(remaining.find((n) => n.id === 1)).toBeUndefined();
+  expect(remaining).toHaveLength(2);
+});
