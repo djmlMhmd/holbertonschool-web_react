@@ -4,9 +4,6 @@ import axios from 'axios';
 import { StyleSheet, css } from 'aphrodite';
 import { useSelector, useDispatch } from 'react-redux';
 
-// Utilities.
-import { getLatestNotification } from './utils/utils';
-
 // Redux actions
 import { logout } from './features/auth/authSlice';
 
@@ -64,34 +61,12 @@ function App() {
     }
   }, [handleLogout]);
 
-  // Fetch notifications.
-  useEffect(() => {
-    const fetchNotifications = async () => {
-      try {
-        const res = await axios.get('http://localhost:3000/notifications.json');
-        const _notificationsList = (res.data.notifications || res.data).map((notif) => {
-          if ((!notif.value && !notif.html) || notif.id === 3) {
-            return { ...notif, html: { __html: getLatestNotification() } };
-          }
-          return notif;
-        });
-        // dispatch(fetchNotifications()); // handled by notificationsSlice thunk
-        void _notificationsList;
-      } catch (err) {
-        console.error('Error fetching notifications:', err);
-      }
-    };
-
-    fetchNotifications();
-  }, []);
-
   // Fetch courses if logged in.
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         const res = await axios.get('http://localhost:3000/courses.json');
         const _coursesList = res.data.courses || res.data;
-        // dispatch(fetchCourses()); // handled by coursesSlice thunk
         void _coursesList;
       } catch (err) {
         console.error('Error fetching courses:', err);

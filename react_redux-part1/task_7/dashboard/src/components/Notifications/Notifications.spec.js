@@ -1,5 +1,5 @@
 // External libraries.
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
@@ -13,6 +13,10 @@ import Notifications from './Notifications';
 
 // Utils.
 import { getLatestNotification } from "../../utils/utils";
+
+// Mock axios.
+jest.mock('axios');
+import axios from 'axios';
 
 // Mock data.
 const mockNotifications = [
@@ -36,6 +40,28 @@ beforeAll(() => {
 // Clear and resume style injection after tests.
 afterAll(() => {
   StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
+
+/*********************
+* FETCH + STATE TEST *
+*********************/
+
+test('Fetches notifications on mount and updates the store', async () => {
+  axios.get.mockResolvedValue({ data: { notifications: mockNotifications } });
+
+  const store = createTestStore({ notifications: [], displayDrawer: false });
+  render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  await waitFor(() => {
+    const state = store.getState().notifications;
+    expect(state.notifications).toHaveLength(3);
+    expect(state.notifications[0].value).toBe('New course available');
+    expect(state.notifications[1].value).toBe('New resume available');
+  });
 });
 
 /******************
