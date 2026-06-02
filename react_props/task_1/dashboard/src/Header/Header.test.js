@@ -1,16 +1,16 @@
 import React from 'react';
+import { render } from '@testing-library/react';
 import Header from './Header';
-import { shallow } from 'enzyme';
 
-describe("Header component", () => {
-    it("renders without crashing", () => {
-        shallow(<Header />);
-    });
+describe('Header component', () => {
+  it('renders without crashing', () => {
+    const { container } = render(<Header />);
+    expect(container).toBeTruthy();
+  });
 
-    it("renders img and h1", () => {
-        const wrapper = shallow(<Header />);
-        expect(wrapper.find('img')).toHaveLength(1);
-        expect(wrapper.find('h1')).toHaveLength(1);
-    });
-});;
-
+  it('renders img and h1', () => {
+    const { container } = render(<Header />);
+    expect(container.querySelector('img')).toBeInTheDocument();
+    expect(container.querySelector('h1')).toBeInTheDocument();
+  });
+});
