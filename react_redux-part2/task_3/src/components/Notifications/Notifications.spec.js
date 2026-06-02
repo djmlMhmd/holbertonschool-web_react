@@ -1,0 +1,170 @@
+// External libraries.
+import { render, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { StyleSheetTestUtils } from 'aphrodite';
+
+// Reducers.
+import notificationsReducer from '../../features/notifications/notificationsSlice';
+
+// Components.
+import Notifications from './Notifications';
+
+// Mock axios.
+jest.mock('axios');
+
+// Mock data (flat shape, matching post-thunk state).
+const mockNotifications = [
+  { id: '1', type: 'default', isRead: false, value: 'New course available' },
+  { id: '2', type: 'urgent', isRead: false, value: 'New resume available' },
+  { id: '3', type: 'urgent', isRead: false, value: 'Urgent requirement - complete by EOD' },
+];
+
+// Helper to build a test store with preloaded notifications state.
+const createTestStore = ({ notifications = [], loading = false } = {}) =>
+  configureStore({
+    reducer: { notifications: notificationsReducer },
+    preloadedState: { notifications: { notifications, loading } },
+  });
+
+// Suppress Aphrodite style injection.
+beforeAll(() => StyleSheetTestUtils.suppressStyleInjection());
+afterAll(() => StyleSheetTestUtils.clearBufferAndResumeStyleInjection());
+
+beforeEach(() => {
+  jest.clearAllMocks();
+  axios.get.mockResolvedValue({ data: mockNotifications });
+});
+
+/******************
+* COMPONENT TESTS *
+******************/
+
+test('Displays notification items from store state', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  expect(getByText('New course available')).toBeInTheDocument();
+  expect(getByText('New resume available')).toBeInTheDocument();
+  expect(getByText('Urgent requirement - complete by EOD')).toBeInTheDocument();
+});
+
+test('Displays loading indicator when loading is true', () => {
+  const store = createTestStore({ loading: true });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  expect(getByText('Loading...')).toBeInTheDocument();
+});
+
+test('Does not display loading indicator when loading is false', () => {
+  const store = createTestStore({ notifications: mockNotifications, loading: false });
+  const { queryByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  expect(queryByText('Loading...')).not.toBeInTheDocument();
+});
+
+test('Adds visible class to drawer when title is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { container, getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  const drawer = container.querySelector('.Notifications');
+  expect(drawer.className).not.toMatch(/visible/);
+
+  fireEvent.click(getByText('Your notifications'));
+  expect(drawer.className).toMatch(/visible/);
+});
+
+test('Removes visible class from drawer when close button is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { container, getByText, getByRole } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('Your notifications'));
+  const drawer = container.querySelector('.Notifications');
+  expect(drawer.className).toMatch(/visible/);
+
+  fireEvent.click(getByRole('button', { name: /close/i }));
+  expect(drawer.className).not.toMatch(/visible/);
+});
+
+test('Removes a notification from the list when marked as read', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('New course available'));
+
+  const remaining = store.getState().notifications.notifications;
+  expect(remaining.find((n) => n.id === '1')).toBeUndefined();
+  expect(remaining).toHaveLength(2);
+});
+
+test('Filters to only urgent notifications when urgent button is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { getByText, queryByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('‼️'));
+
+  expect(getByText('New resume available')).toBeInTheDocument();
+  expect(getByText('Urgent requirement - complete by EOD')).toBeInTheDocument();
+  expect(queryByText('New course available')).not.toBeInTheDocument();
+});
+
+test('Filters to only default notifications when default button is clicked', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { getByText, queryByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('??'));
+
+  expect(getByText('New course available')).toBeInTheDocument();
+  expect(queryByText('New resume available')).not.toBeInTheDocument();
+  expect(queryByText('Urgent requirement - complete by EOD')).not.toBeInTheDocument();
+});
+
+test('Toggling the same filter button twice resets to all notifications', () => {
+  const store = createTestStore({ notifications: mockNotifications });
+  const { getByText } = render(
+    <Provider store={store}>
+      <Notifications />
+    </Provider>
+  );
+
+  fireEvent.click(getByText('‼️'));
+  fireEvent.click(getByText('‼️'));
+
+  expect(getByText('New course available')).toBeInTheDocument();
+  expect(getByText('New resume available')).toBeInTheDocument();
+  expect(getByText('Urgent requirement - complete by EOD')).toBeInTheDocument();
+});
