@@ -1,12 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import Footer from './Footer';
-import { getFullYear } from '../utils/utils';
+import { getFullYear, getFooterCopy } from '../utils/utils';
 
 describe('Footer', () => {
-  it('renders the copyright text with the current year and Holberton School', () => {
-    const { getByText } = render(<Footer />);
-    const year = getFullYear();
-    expect(getByText(`Copyright ${year} - Holberton School`)).toBeInTheDocument();
+  it('renders the correct copyright string when getFooterCopy isIndex is true', () => {
+    const { container } = render(<Footer />);
+    const p = container.querySelector('p');
+    expect(p).not.toBeNull();
+    expect(p.textContent).toBe(`Copyright ${getFullYear()} - ${getFooterCopy(true)}`);
   });
 });
