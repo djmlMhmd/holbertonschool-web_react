@@ -40,7 +40,7 @@
     "webpack-dev-server": "^3.11.3"
   },
   "jest": {
-    "setupFiles": [
+    "setupFilesAfterFramework": [
       "<rootDir>/config/setupTests.js"
     ],
     "moduleNameMapper": {
