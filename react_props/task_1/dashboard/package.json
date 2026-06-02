@@ -41,7 +41,7 @@
     "webpack-dev-server": "^3.11.3"
   },
   "jest": {
-    "setupFiles": [
+    "setupFilesAfterEnv": [
       "<rootDir>/config/setupTests.js"
     ],
     "moduleNameMapper": {

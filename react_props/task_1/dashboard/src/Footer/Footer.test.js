@@ -1,15 +1,15 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { render } from '@testing-library/react';
 import Footer from './Footer';
 
+describe('Footer component', () => {
+  it('renders without crashing', () => {
+    const { container } = render(<Footer />);
+    expect(container).toBeTruthy();
+  });
 
-describe("Footer component", () => {
-    it("renders without crashing", ()=> {
-        shallow(<Footer />)
-    });
-
-    it("renders the text 'Copyright'", () => {
-        const wrapper = shallow(<Footer />);
-        expect(wrapper.text()).toContain("Copyright");
-    });
-})
+  it("renders the text 'Copyright'", () => {
+    const { container } = render(<Footer />);
+    expect(container.textContent).toContain('Copyright');
+  });
+});
