@@ -83,7 +83,7 @@ test('Renders header row with single cell and correct background color', () => {
 
     expect(cell).toBeInTheDocument();
     expect(cell).toHaveTextContent('Available courses');
-    expect(row).toHaveStyle('background-color: #deb5b545');
+    expect(row.className).toContain('bg-table-header');
 });
 
 test('Renders header row with two cells and correct background color', () => {
@@ -105,7 +105,7 @@ test('Renders header row with two cells and correct background color', () => {
     expect(cells).toHaveLength(2);
     expect(cells[0]).toHaveTextContent('Course name');
     expect(cells[1]).toHaveTextContent('Credit');
-    expect(row).toHaveStyle('background-color: #deb5b545');
+    expect(row.className).toContain('bg-table-header');
 });
 
 test('Renders regular row with correct background color', () => {
@@ -126,7 +126,7 @@ test('Renders regular row with correct background color', () => {
     expect(cells).toHaveLength(2);
     expect(cells[0]).toHaveTextContent('ES6');
     expect(cells[1]).toHaveTextContent('60');
-    expect(row).toHaveStyle('background-color: #f5f5f5ab');
+    expect(row.className).toContain('bg-table-rows');
 });
 
 test('Renders row with only first cell when no second cell provided', () => {
@@ -143,5 +143,5 @@ test('Renders row with only first cell when no second cell provided', () => {
 
     expect(cells).toHaveLength(2);
     expect(cells[0]).toHaveTextContent('No course available yet');
-    expect(row).toHaveStyle('background-color: #f5f5f5ab');
+    expect(row.className).toContain('bg-table-rows');
 });
