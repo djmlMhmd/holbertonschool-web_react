@@ -6,7 +6,7 @@ function Header() {
     return (
         <>
             <div className="header">
-                <img src={logo} alt="" />
+                <img src={logo} alt="holberton logo" />
                 <h1>School dashboard</h1>
             </div>
             <hr/>
