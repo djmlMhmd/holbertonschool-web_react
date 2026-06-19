@@ -12,13 +12,13 @@ function Login() {
     return (
         <>
             <div className="App-body">
-                <p>Login to access the full dashborad</p>
+                <p>Login to access the full dashboard</p>
 
                 <label onClick={() => focusInput(emailRef)} htmlFor="email">Email: </label>
-                <input type="email" ref={emailRef} />
+                <input type="email" id="email" name="email" ref={emailRef} />
 
                 <label onClick={() => focusInput(passwordRef)} htmlFor="password">Password</label>
-                <input type="password" ref={passwordRef} />
+                <input type="password" id="password" name="password" ref={passwordRef} />
 
                 <button>OK</button>
             </div>

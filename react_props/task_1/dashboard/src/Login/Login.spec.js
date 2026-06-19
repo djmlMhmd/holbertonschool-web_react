@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Login from './Login';
 
@@ -12,20 +12,16 @@ describe('Login', () => {
   });
 
   it('focuses the email input when the email label is clicked', () => {
-    const { container } = render(<Login />);
-    const emailLabel = container.querySelectorAll('label')[0];
-    const emailInput = container.querySelector('input[type="email"]');
-    const focusSpy = jest.spyOn(emailInput, 'focus');
-    fireEvent.click(emailLabel);
-    expect(focusSpy).toHaveBeenCalled();
+    render(<Login />);
+    const emailInput = screen.getByLabelText(/email/i);
+    fireEvent.click(screen.getByText(/email/i));
+    expect(emailInput).toHaveFocus();
   });
 
   it('focuses the password input when the password label is clicked', () => {
-    const { container } = render(<Login />);
-    const passwordLabel = container.querySelectorAll('label')[1];
-    const passwordInput = container.querySelector('input[type="password"]');
-    const focusSpy = jest.spyOn(passwordInput, 'focus');
-    fireEvent.click(passwordLabel);
-    expect(focusSpy).toHaveBeenCalled();
+    render(<Login />);
+    const passwordInput = screen.getByLabelText(/password/i);
+    fireEvent.click(screen.getByText(/password/i));
+    expect(passwordInput).toHaveFocus();
   });
 });
