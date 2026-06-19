@@ -1,14 +1,3 @@
-# Holberton School Dashboard
+<img height="50" align="right" src="https://raw.githubusercontent.com/fchavonet/fchavonet/main/assets/images/logo-holberton_school.png" alt="Holberton School logo">
 
-This is a basic React intro project demonstrating project structure, configuration with Vite/Jest, and basic component rendering.
-
-## Requirements
-- Vite
-- Jest
-- Babel
-
-## Structure
-- `src/App.jsx`: Main App component
-- `src/App.css`: App styling
-- `setupTests.js`: Jest setup for testing library
-- `fileTransformer.js`: Jest transformer for static assets
+# Task 0
