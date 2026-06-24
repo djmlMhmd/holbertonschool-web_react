@@ -1,11 +1,12 @@
 import React from 'react';
 import CourseListRow from './CourseListRow';
+import './CourseList.css';
 
 function CourseList({ courses = [] }) {
     if (courses.length === 0) {
         return (
-            <div className="CourseListContainer w-4/5 mx-auto my-12">
-                <table id="CourseList" className="w-full border-collapse">
+            <div className="CourseListContainer">
+                <table id="CourseList" className="CourseListTable">
                     <tbody>
                         <CourseListRow textFirstCell="No course available yet" isHeader={true} />
                     </tbody>
@@ -15,8 +16,8 @@ function CourseList({ courses = [] }) {
     }
 
     return (
-        <div className="CourseListContainer w-4/5 mx-auto my-12">
-            <table id="CourseList" className="w-full border-collapse">
+        <div className="CourseListContainer">
+            <table id="CourseList" className="CourseListTable">
                 <thead>
                     <CourseListRow textFirstCell="Available courses" isHeader={true} />
                     <CourseListRow
