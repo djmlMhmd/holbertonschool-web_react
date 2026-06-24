@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import './App.css'
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -12,50 +12,6 @@ import { getLatestNotification } from "../utils/utils";
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
-
-// Styles Aphrodite
-const styles = StyleSheet.create({
-  // Reset CSS global
-  reset: {
-    '*': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-      scrollBehavior: 'smooth',
-    },
-    '*::before': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-    },
-    '*::after': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-    }
-  },
-  app: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-  },
-  body: {
-    flex: 1,
-    padding: '20px',
-  },
-  footer: {
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-    fontSize: '0.8rem',
-    fontWeight: 200,
-    fontStyle: 'italic',
-    borderTop: '0.25rem solid #e1003c',
-  }
-});
 
 class App extends Component {
   static defaultProps = {
@@ -71,32 +27,11 @@ class App extends Component {
   };
 
   componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
-
-    const resetCSS = `
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        scroll-behavior: smooth;
-      }
-      
-      #root {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-    `;
-
-    const style = document.createElement('style');
-    style.textContent = resetCSS;
-    document.head.appendChild(style);
+    document.addEventListener("keydown", this.handleKeyDown)
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener('keydown', this.handleKeyDown)
   }
 
   render() {
@@ -139,31 +74,27 @@ class App extends Component {
     ];
 
     return (
-      <div className={css(styles.app)}>
+      <>
         <Notifications notifications={notificationsList} />
 
         <Header />
 
-        <div className={css(styles.body)}>
-          {isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Course list">
-              <CourseListWithLogging courses={coursesList} />
-            </BodySectionWithMarginBottom>
-          ) : (
-            <BodySectionWithMarginBottom title="Log in to continue">
-              <LoginWithLogging />
-            </BodySectionWithMarginBottom>
-          )}
+        {isLoggedIn ? (
+          <BodySectionWithMarginBottom title="Course list">
+            <CourseListWithLogging courses={coursesList} />
+          </BodySectionWithMarginBottom>
+        ) : (
+          <BodySectionWithMarginBottom title="Log in to continue">
+            <LoginWithLogging />
+          </BodySectionWithMarginBottom>
+        )}
 
-          <BodySection title="News from the School">
-            <p>Holberton School News goes here</p>
-          </BodySection>
-        </div>
+        <BodySection title="News from the School">
+          <p>Holberton School News goes here</p>
+        </BodySection>
 
-        <div className={css(styles.footer)}>
-          <Footer />
-        </div>
-      </div>
+        <Footer />
+      </>
     );
   }
 }

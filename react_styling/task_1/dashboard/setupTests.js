@@ -1,25 +1,5 @@
 import '@testing-library/jest-dom';
-import { StyleSheetTestUtils } from 'aphrodite';
 
-// Configuration globale Aphrodite pour tous les tests
-beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
-
-// Mock du document si nécessaire pour éviter les erreurs Aphrodite
-if (typeof document === 'undefined') {
-    global.document = {
-        querySelector: () => null,
-        createElement: () => ({}),
-        head: { appendChild: () => { } },
-    };
-}
-
-// Votre matcher personnalisé existant
 expect.extend({
     toHaveStyle(received, styles) {
         const element = received;

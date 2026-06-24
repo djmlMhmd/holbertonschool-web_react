@@ -1,15 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { StyleSheetTestUtils } from 'aphrodite';
 import BodySection from './BodySection';
-
-beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
 
 test('Renders heading with title prop value', () => {
     const { getByRole } = render(
@@ -53,7 +44,7 @@ test('Renders with no children', () => {
         <BodySection title='test title' />
     );
 
-    const bodySection = container.firstChild;
+    const bodySection = container.querySelector('.bodySection');
     expect(bodySection).toBeInTheDocument();
     expect(bodySection.children).toHaveLength(1);
 });
