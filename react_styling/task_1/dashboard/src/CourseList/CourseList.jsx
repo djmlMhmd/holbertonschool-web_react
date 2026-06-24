@@ -5,6 +5,7 @@ function CourseList({ courses = [] }) {
     if (courses.length === 0) {
         return (
             <div className="w-4/5 mx-auto my-12">
+                <span className="sr-only">Available courses</span>
                 <table id="CourseList" className="w-full border-collapse">
                     <thead>
                         <CourseListRow textFirstCell="No course available yet" isHeader={true} />
