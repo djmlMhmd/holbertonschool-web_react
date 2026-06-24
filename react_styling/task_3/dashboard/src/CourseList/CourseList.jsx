@@ -4,7 +4,7 @@ import CourseListRow from './CourseListRow';
 function CourseList({ courses = [] }) {
     if (courses.length === 0) {
         return (
-            <div className="mx-auto my-12 w-4/5">
+            <div className="mx-auto mb-12 mt-32 w-4/5">
                 <span className="sr-only">Available courses</span>
                 <table id="CourseList" className="w-full border-collapse">
                     <thead>
@@ -16,7 +16,7 @@ function CourseList({ courses = [] }) {
     }
 
     return (
-        <div className="mx-auto my-12 w-4/5">
+        <div className="mx-auto mb-12 mt-32 w-4/5">
             <table id="CourseList" className="w-full border-collapse">
                 <thead>
                     <CourseListRow textFirstCell="Available courses" isHeader={true} />
