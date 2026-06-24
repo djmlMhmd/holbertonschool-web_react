@@ -7,14 +7,14 @@ function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = 
         if (textSecondCell === null) {
             return (
                 <tr className={rowClass}>
-                    <th colSpan="2" className="border border-gray-400">{textFirstCell}</th>
+                    <th colSpan="2" className="border border-gray-400 p-[0.2rem] text-center">{textFirstCell}</th>
                 </tr>
             );
         }
         return (
             <tr className={rowClass}>
-                <th className="border border-gray-400">{textFirstCell}</th>
-                <th className="border border-gray-400">{textSecondCell}</th>
+                <th className="w-[60%] border border-gray-400 p-[0.2rem] text-center">{textFirstCell}</th>
+                <th className="w-[40%] border border-gray-400 p-[0.2rem] text-center">{textSecondCell}</th>
             </tr>
         );
     }
@@ -22,15 +22,15 @@ function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = 
     if (textSecondCell === null) {
         return (
             <tr className={rowClass}>
-                <td className="border border-gray-400 pl-2">{textFirstCell}</td>
-                <td className="border border-gray-400 pl-2"></td>
+                <td className="border border-gray-400 p-[0.2rem] pl-2 text-center">{textFirstCell}</td>
+                <td className="border-none w-0"></td>
             </tr>
         );
     }
     return (
         <tr className={rowClass}>
-            <td className="border border-gray-400 pl-2">{textFirstCell}</td>
-            <td className="border border-gray-400 pl-2">{textSecondCell}</td>
+            <td className="w-[60%] border border-gray-400 p-[0.2rem] pl-2">{textFirstCell}</td>
+            <td className="w-[40%] border border-gray-400 p-[0.2rem] pl-2">{textSecondCell}</td>
         </tr>
     );
 }
