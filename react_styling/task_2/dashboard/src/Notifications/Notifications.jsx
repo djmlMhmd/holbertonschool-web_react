@@ -57,7 +57,7 @@ class Notifications extends Component {
             }
 
             drawerContent = (
-                <div className="relative w-full border-2 border-dashed border-main-color p-1.5 md:w-1/4 md:min-w-[26rem]">
+                <div className="notifications relative w-full border-2 border-dashed border-main-color p-1.5 md:w-1/4 md:min-w-[26rem]">
                     <button
                         className="absolute top-4 right-4 cursor-pointer border-none bg-transparent"
                         aria-label="Close"
@@ -76,8 +76,8 @@ class Notifications extends Component {
 
         return (
             <div className="root-notifications">
-                <div className="absolute top-0 right-0 flex w-full flex-col items-end p-4">
-                    <div className="mb-2 text-right">Your notifications</div>
+                <div className="notification-container absolute top-0 right-0 flex w-full flex-col items-end p-4">
+                    <div className="notifications-title mb-2 text-right">Your notifications</div>
                     {drawerContent}
                 </div>
             </div>
