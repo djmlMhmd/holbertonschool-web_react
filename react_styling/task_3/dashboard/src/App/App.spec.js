@@ -23,8 +23,8 @@ describe('App Component Tests', () => {
 
     test('Renders Footer component', () => {
         render(<App />);
-        const footer = screen.getByText(/copyright/i);
-        expect(footer).toBeInTheDocument();
+        const footer = screen.getAllByText(/copyright/i);
+        expect(footer.length).toBeGreaterThan(0);
     });
 
     test('Should render the Login component', () => {
