@@ -27,15 +27,15 @@ function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = 
     if (textSecondCell === null) {
         return (
             <tr className={rowClass} style={rowStyle}>
-                <td className="border border-black p-[0.2rem] text-center">{textFirstCell}</td>
+                <td className="border border-black p-[0.2rem] pl-2 text-center">{textFirstCell}</td>
                 <td className="border-none w-0"></td>
             </tr>
         );
     }
     return (
         <tr className={rowClass} style={rowStyle}>
-            <td className="w-[60%] border border-black p-[0.2rem]">{textFirstCell}</td>
-            <td className="w-[40%] border border-black p-[0.2rem]">{textSecondCell}</td>
+            <td className="w-[60%] border border-black p-[0.2rem] pl-2">{textFirstCell}</td>
+            <td className="w-[40%] border border-black p-[0.2rem] pl-2">{textSecondCell}</td>
         </tr>
     );
 }
