@@ -6,9 +6,9 @@ function CourseList({ courses = [] }) {
         return (
             <div className="w-4/5 mx-auto my-12">
                 <table id="CourseList" className="w-full border-collapse">
-                    <tbody>
+                    <thead>
                         <CourseListRow textFirstCell="No course available yet" isHeader={true} />
-                    </tbody>
+                    </thead>
                 </table>
             </div>
         );
