@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite build && vite preview",
+    "preview": "vite preview",
     "test": "jest"
   },
   "dependencies": {
