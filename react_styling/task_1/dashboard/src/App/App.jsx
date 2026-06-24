@@ -12,6 +12,23 @@ import { getLatestNotification } from "../utils/utils";
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
+const DEFAULT_COURSES = [
+  {
+    id: 1,
+    name: 'ES6',
+    credit: 60
+  },
+  {
+    id: 2,
+    name: 'Webpack',
+    credit: 20
+  },
+  {
+    id: 3,
+    name: 'React',
+    credit: 40
+  }
+];
 
 class App extends Component {
   static defaultProps = {
@@ -35,23 +52,9 @@ class App extends Component {
   }
 
   render() {
-    const { isLoggedIn = false, coursesList = [
-      {
-        id: 1,
-        name: 'ES6',
-        credit: 60
-      },
-      {
-        id: 2,
-        name: 'Webpack',
-        credit: 20
-      },
-      {
-        id: 3,
-        name: 'React',
-        credit: 40
-      }
-    ] } = this.props;
+    const { isLoggedIn = false } = this.props;
+    const hasCoursesListProp = Object.prototype.hasOwnProperty.call(this.props, 'coursesList');
+    const coursesList = hasCoursesListProp ? this.props.coursesList : DEFAULT_COURSES;
 
     const notificationsList = [
       {
