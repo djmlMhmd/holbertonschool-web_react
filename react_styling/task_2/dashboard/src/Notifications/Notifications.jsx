@@ -3,13 +3,6 @@ import NotificationItem from './NotificationItem';
 import closeButton from "../assets/close-button.png";
 
 class Notifications extends Component {
-    shouldComponentUpdate(nextProps) {
-        const currentLength = this.props.notifications ? this.props.notifications.length : 0;
-        const nextLength = nextProps.notifications ? nextProps.notifications.length : 0;
-
-        return currentLength !== nextLength;
-    }
-
     markAsRead = (id) => {
         console.log(`Notification ${id} has been marked as read`);
     }
@@ -19,7 +12,7 @@ class Notifications extends Component {
         let drawerContent = null;
 
         if (displayDrawer) {
-            let content = "No new notification for now";
+            let content = <p>No new notification for now</p>;
 
             if (notifications.length > 0) {
                 const items = notifications.map(notification => {
