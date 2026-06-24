@@ -84,14 +84,14 @@ test('Displays list, paragraph and close button when displayDrawer is true', () 
 });
 
 test('Displays "no new notification for now" when displayDrawer is true and no notifications', () => {
-    const { getByText, getByRole, queryAllByRole } = render(
+    const { getByText, queryByRole, queryAllByRole } = render(
         <Notifications displayDrawer={true} notifications={[]} />
     );
 
     expect(getByText('Your notifications')).toBeInTheDocument();
     expect(getByText('no new notification for now')).toBeInTheDocument();
     expect(queryAllByRole('listitem')).toHaveLength(0);
-    expect(getByRole('button', { name: /close/i })).toBeInTheDocument();
+    expect(queryByRole('button', { name: /close/i })).not.toBeInTheDocument();
 });
 
 test('Logs correct message when clicking on first notification item', () => {

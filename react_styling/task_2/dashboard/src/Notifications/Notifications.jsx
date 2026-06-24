@@ -51,17 +51,19 @@ class Notifications extends Component {
 
             drawerContent = (
                 <div className="notifications relative w-full border-2 border-dashed border-main-color p-1.5 md:w-1/4 md:min-w-[26rem]">
-                    <button
-                        className="absolute top-4 right-4 cursor-pointer border-none bg-transparent"
-                        aria-label="Close"
-                        onClick={() => console.log('Close button has been clicked')}
-                    >
-                        <img
-                            src={closeButton}
-                            alt="close"
-                            className="h-[15px] w-[15px]"
-                        />
-                    </button>
+                    {notifications.length > 0 ? (
+                        <button
+                            className="absolute top-4 right-4 cursor-pointer border-none bg-transparent"
+                            aria-label="Close"
+                            onClick={() => console.log('Close button has been clicked')}
+                        >
+                            <img
+                                src={closeButton}
+                                alt="close"
+                                className="h-[15px] w-[15px]"
+                            />
+                        </button>
+                    ) : null}
                     {content}
                 </div>
             );

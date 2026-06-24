@@ -123,7 +123,7 @@ class App extends Component {
       coursesList = DEFAULT_COURSES,
     } = this.props;
 
-    const notificationsList = this.props.notificationsList || [
+    const notificationsList = [
       {
         id: 1,
         type: "default",
