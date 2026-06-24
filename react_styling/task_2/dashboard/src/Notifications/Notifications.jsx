@@ -12,7 +12,7 @@ class Notifications extends Component {
         let drawerContent = null;
 
         if (displayDrawer) {
-            let content = <p>No new notification for now</p>;
+            let content = <p>no new notification for now</p>;
 
             if (notifications.length > 0) {
                 const items = notifications.map(notification => {
