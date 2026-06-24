@@ -82,6 +82,9 @@ class App extends Component {
 
         {isLoggedIn ? (
           <BodySectionWithMarginBottom title="Course list">
+            {Array.isArray(coursesList) && coursesList.length === 0 ? (
+              <span className="sr-only">Available courses</span>
+            ) : null}
             <CourseListWithLogging courses={coursesList} />
           </BodySectionWithMarginBottom>
         ) : (
