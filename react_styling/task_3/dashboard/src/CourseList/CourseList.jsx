@@ -16,7 +16,7 @@ function CourseList({ courses = [] }) {
     }
 
     return (
-        <div className="mx-auto mb-12 mt-24 w-4/5">
+        <div className="mx-auto my-12 flex min-h-[22rem] w-4/5 items-center">
             <table id="CourseList" className="w-full border-collapse">
                 <thead>
                     <CourseListRow textFirstCell="Available courses" isHeader={true} />
