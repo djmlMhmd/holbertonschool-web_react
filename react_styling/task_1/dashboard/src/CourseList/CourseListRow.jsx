@@ -1,7 +1,7 @@
 import React from 'react';
 
 function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = null }) {
-    const rowClass = isHeader ? 'bg-table-header' : 'bg-table-rows';
+    const rowClass = isHeader ? 'bg-table-header/[0.27]' : 'bg-table-rows/20';
 
     if (isHeader === true) {
         if (textSecondCell === null) {
