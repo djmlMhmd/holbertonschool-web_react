@@ -12,6 +12,23 @@ import { getLatestNotification } from "../utils/utils";
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
+const DEFAULT_COURSES = [
+  {
+    id: 1,
+    name: 'ES6',
+    credit: 60
+  },
+  {
+    id: 2,
+    name: 'Webpack',
+    credit: 20
+  },
+  {
+    id: 3,
+    name: 'React',
+    credit: 40
+  }
+];
 
 // Styles Aphrodite
 const styles = StyleSheet.create({
@@ -60,6 +77,7 @@ const styles = StyleSheet.create({
 class App extends Component {
   static defaultProps = {
     isLoggedIn: false,
+    coursesList: DEFAULT_COURSES,
     logOut: () => { }
   };
 
@@ -100,9 +118,12 @@ class App extends Component {
   }
 
   render() {
-    const { isLoggedIn = false } = this.props;
+    const {
+      isLoggedIn = false,
+      coursesList = DEFAULT_COURSES,
+    } = this.props;
 
-    const notificationsList = [
+    const notificationsList = this.props.notificationsList || [
       {
         id: 1,
         type: "default",
@@ -117,24 +138,6 @@ class App extends Component {
         id: 3,
         type: "urgent",
         value: getLatestNotification()
-      }
-    ];
-
-    const coursesList = [
-      {
-        id: 1,
-        name: 'ES6',
-        credit: 60
-      },
-      {
-        id: 2,
-        name: 'Webpack',
-        credit: 20
-      },
-      {
-        id: 3,
-        name: 'React',
-        credit: 40
       }
     ];
 
