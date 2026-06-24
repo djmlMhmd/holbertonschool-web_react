@@ -1,17 +1,8 @@
 import React from 'react';
 import App from './App.jsx';
 import { render, screen } from '@testing-library/react';
-import { StyleSheetTestUtils } from 'aphrodite';
 
 describe('App Component Tests', () => {
-    beforeEach(() => {
-        StyleSheetTestUtils.suppressStyleInjection();
-    });
-
-    afterEach(() => {
-        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-    });
-
     test('Renders Notifications component', () => {
         render(<App />);
         const notificationTitle = screen.getByText(/your notifications/i);
@@ -86,13 +77,11 @@ describe('App Keyboard Events Tests', () => {
     let logOutMock;
 
     beforeEach(() => {
-        StyleSheetTestUtils.suppressStyleInjection();
         alertMock = jest.spyOn(window, "alert").mockImplementation(() => { });
         logOutMock = jest.fn();
     });
 
     afterEach(() => {
-        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
         alertMock.mockRestore();
     });
 

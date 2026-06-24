@@ -140,7 +140,7 @@ class App extends Component {
 
     return (
       <div className={css(styles.app)}>
-        <Notifications notifications={notificationsList} />
+        <Notifications notifications={notificationsList} displayDrawer={true} />
 
         <Header />
 

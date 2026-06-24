@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StyleSheetTestUtils } from 'aphrodite';
 import Notifications from './Notifications';
 import { getLatestNotification } from "../utils/utils";
 
@@ -26,12 +25,10 @@ const mockNotifications = [
 let consoleSpy;
 
 beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
     consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
 });
 
 afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
     consoleSpy.mockRestore();
     cleanup();
 });

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import NotificationItem from './NotificationItem';
 import closeButton from "../assets/close-button.png";
 
@@ -16,47 +15,6 @@ class Notifications extends Component {
     }
 
     render() {
-        const styles = StyleSheet.create({
-            notificationContainer: {
-                width: '100%',
-                padding: '1rem',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end'
-            },
-            notificationsTitle: {
-                marginBottom: '0.5rem'
-            },
-            notifications: {
-                width: '500px',
-                position: 'relative',
-                padding: '0.5rem',
-                border: '1px dashed red'
-            },
-            notificationsP: {
-                marginBottom: '1rem'
-            },
-            notificationsUl: {
-                marginLeft: '2rem'
-            },
-            closeButton: {
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer'
-            },
-            closeButtonImg: {
-                width: '15px',
-                height: '15px'
-            }
-        });
-
         const { notifications = [], displayDrawer = false } = this.props;
         let drawerContent = null;
 
@@ -92,23 +50,23 @@ class Notifications extends Component {
 
                 content = (
                     <>
-                        <p className={css(styles.notificationsP)}>Here is the list of notifications</p>
-                        <ul className={css(styles.notificationsUl)}>{items}</ul>
+                        <p className="mb-4">Here is the list of notifications</p>
+                        <ul className="pl-8">{items}</ul>
                     </>
                 );
             }
 
             drawerContent = (
-                <div className={css(styles.notifications)}>
+                <div className="relative w-full border-2 border-dashed border-main-color p-1.5 md:w-1/4 md:min-w-[26rem]">
                     <button
-                        className={css(styles.closeButton)}
+                        className="absolute top-4 right-4 cursor-pointer border-none bg-transparent"
                         aria-label="Close"
                         onClick={() => console.log('Close button has been clicked')}
                     >
                         <img
                             src={closeButton}
                             alt="close"
-                            className={css(styles.closeButtonImg)}
+                            className="h-[15px] w-[15px]"
                         />
                     </button>
                     {content}
@@ -118,8 +76,8 @@ class Notifications extends Component {
 
         return (
             <div className="root-notifications">
-                <div className={css(styles.notificationContainer)}>
-                    <div className={css(styles.notificationsTitle)}>Your notifications</div>
+                <div className="absolute top-0 right-0 flex w-full flex-col items-end p-4">
+                    <div className="mb-2 text-right">Your notifications</div>
                     {drawerContent}
                 </div>
             </div>

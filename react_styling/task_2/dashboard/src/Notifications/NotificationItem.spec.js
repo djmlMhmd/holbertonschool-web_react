@@ -2,17 +2,6 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import NotificationItem from './NotificationItem';
 
-const mockGetComputedStyle = (element) => {
-    const type = element.getAttribute('data-notification-type');
-    return {
-        color: type === 'default' ? 'blue' : 'red'
-    };
-};
-
-Object.defineProperty(window, 'getComputedStyle', {
-    value: mockGetComputedStyle,
-});
-
 let consoleSpy;
 
 beforeEach(() => {
@@ -23,28 +12,22 @@ afterEach(() => {
     consoleSpy.mockRestore();
 });
 
-test('Renders with default type and blue color', () => {
+test('Renders with default type', () => {
     const { container } = render(
         <NotificationItem type="default" value="Test notification" />
     );
 
     const li = container.querySelector('li');
     expect(li).toHaveAttribute('data-notification-type', 'default');
-
-    const computedStyle = window.getComputedStyle(li);
-    expect(computedStyle.color).toBe('blue');
 });
 
-test('Renders with urgent type and red color', () => {
+test('Renders with urgent type', () => {
     const { container } = render(
         <NotificationItem type="urgent" value="Urgent notification" />
     );
 
     const li = container.querySelector('li');
     expect(li).toHaveAttribute('data-notification-type', 'urgent');
-
-    const computedStyle = window.getComputedStyle(li);
-    expect(computedStyle.color).toBe('red');
 });
 
 test('Renders with html content', () => {
