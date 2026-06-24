@@ -7,7 +7,7 @@ function CourseList({ courses = [] }) {
             <div className="CourseListContainer w-4/5 mx-auto my-12">
                 <table id="CourseList" className="w-full border-collapse">
                     <tbody>
-                        <CourseListRow textFirstCell="No course available yet" isHeader={true} />
+                        <CourseListRow textFirstCell="No course available yet" />
                     </tbody>
                 </table>
             </div>

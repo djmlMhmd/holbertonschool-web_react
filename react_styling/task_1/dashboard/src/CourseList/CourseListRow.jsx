@@ -22,7 +22,7 @@ function CourseListRow({ isHeader = false, textFirstCell = "", textSecondCell = 
     if (textSecondCell === null) {
         return (
             <tr className={rowClass}>
-                <td className="border border-gray-400 p-[0.2rem] pl-2 text-center">{textFirstCell}</td>
+                <td className="border border-gray-400 p-[0.2rem] text-center">{textFirstCell}</td>
                 <td className="border-none w-0"></td>
             </tr>
         );
