@@ -15,7 +15,7 @@ class Notifications extends Component {
     }
 
     render() {
-        const { notifications = [], displayDrawer = false } = this.props;
+        const { notifications = [], displayDrawer = true } = this.props;
         let drawerContent = null;
 
         if (displayDrawer) {
