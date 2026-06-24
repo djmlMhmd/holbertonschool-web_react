@@ -8,6 +8,11 @@ import App from './App/App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App isLoggedIn={true} displayDrawer={true} />
+    <App
+      isLoggedIn={true}
+      displayDrawer={true}
+    />
   </StrictMode>,
 )
+
+// isLoggedIn={true} coursesList={[]} displayDrawer={true}
