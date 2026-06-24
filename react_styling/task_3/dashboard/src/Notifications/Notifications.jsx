@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import NotificationItem from './NotificationItem';
 import closeButton from "../assets/close-button.png";
 
@@ -8,7 +7,7 @@ class Notifications extends Component {
         const currentLength = this.props.notifications ? this.props.notifications.length : 0;
         const nextLength = nextProps.notifications ? nextProps.notifications.length : 0;
 
-        return currentLength !== nextLength;
+        return currentLength !== nextLength || this.props.displayDrawer !== nextProps.displayDrawer;
     }
 
     markAsRead = (id) => {
@@ -16,114 +15,72 @@ class Notifications extends Component {
     }
 
     render() {
-        const styles = StyleSheet.create({
-            notificationContainer: {
-                width: '100%',
-                padding: '1rem',
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end'
-            },
-            notificationsTitle: {
-                marginBottom: '0.5rem'
-            },
-            notifications: {
-                width: '500px',
-                position: 'relative',
-                padding: '0.5rem',
-                border: '1px dashed red'
-            },
-            notificationsP: {
-                marginBottom: '1rem'
-            },
-            notificationsUl: {
-                marginLeft: '2rem'
-            },
-            closeButton: {
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer'
-            },
-            closeButtonImg: {
-                width: '15px',
-                height: '15px'
-            }
-        });
+        const { notifications = [], displayDrawer = true } = this.props;
+        let content = <p>No new notification for now</p>;
 
-        const { notifications = [], displayDrawer = false } = this.props;
-        let drawerContent = null;
+        if (notifications.length > 0) {
+            const items = notifications.map((notification) => {
+                const itemProps = {
+                    id: notification.id,
+                    type: notification.type,
+                    markAsRead: this.markAsRead,
+                };
 
-        if (displayDrawer) {
-            let content = "No new notification for now";
-
-            if (notifications.length > 0) {
-                const items = notifications.map(notification => {
-                    const itemProps = {
-                        id: notification.id,
-                        type: notification.type,
-                        markAsRead: this.markAsRead
-                    };
-
-                    if (notification.html) {
-                        return (
-                            <NotificationItem
-                                key={notification.id}
-                                {...itemProps}
-                                html={notification.html}
-                            />
-                        );
-                    }
-
+                if (notification.html) {
                     return (
                         <NotificationItem
                             key={notification.id}
                             {...itemProps}
-                            value={notification.value}
+                            html={notification.html}
                         />
                     );
-                });
+                }
 
-                content = (
-                    <>
-                        <p className={css(styles.notificationsP)}>Here is the list of notifications</p>
-                        <ul className={css(styles.notificationsUl)}>{items}</ul>
-                    </>
+                return (
+                    <NotificationItem
+                        key={notification.id}
+                        {...itemProps}
+                        value={notification.value}
+                    />
                 );
-            }
+            });
 
-            drawerContent = (
-                <div className={css(styles.notifications)}>
-                    <button
-                        className={css(styles.closeButton)}
-                        aria-label="Close"
-                        onClick={() => console.log('Close button has been clicked')}
-                    >
-                        <img
-                            src={closeButton}
-                            alt="close"
-                            className={css(styles.closeButtonImg)}
-                        />
-                    </button>
-                    {content}
-                </div>
+            content = (
+                <>
+                    <p className="mb-4">Here is the list of notifications</p>
+                    <ul className="pl-6">{items}</ul>
+                </>
             );
         }
 
         return (
             <div className="root-notifications">
-                <div className={css(styles.notificationContainer)}>
-                    <div className={css(styles.notificationsTitle)}>Your notifications</div>
-                    {drawerContent}
+                <div className="notification-container absolute top-0 right-0 flex w-full flex-col items-end px-4 pt-2">
+                    <div className="notifications-title mb-1 text-right text-4xl leading-none md:text-base md:leading-normal">
+                        Your notifications
+                    </div>
+
+                    {displayDrawer ? (
+                        <div className="notifications relative w-full border-2 border-dashed border-main-color p-1.5 md:w-1/4 md:min-w-[25rem]">
+                            {notifications.length > 0 ? (
+                                <button
+                                    className="absolute top-2 right-2 cursor-pointer border-none bg-transparent"
+                                    aria-label="Close"
+                                    onClick={() => console.log('Close button has been clicked')}
+                                >
+                                    <img
+                                        src={closeButton}
+                                        alt="close"
+                                        className="h-[15px] w-[15px]"
+                                    />
+                                </button>
+                            ) : null}
+                            {content}
+                        </div>
+                    ) : null}
                 </div>
             </div>
-        )
+        );
     }
 }
 

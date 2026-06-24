@@ -1,14 +1,4 @@
 import React, { PureComponent, createRef } from 'react';
-import { StyleSheet, css } from 'aphrodite';
-
-const styles = StyleSheet.create({
-    default: {
-        color: 'blue',
-    },
-    urgent: {
-        color: 'red',
-    }
-});
 
 class NotificationItem extends PureComponent {
     constructor(props) {
@@ -18,6 +8,7 @@ class NotificationItem extends PureComponent {
 
     handleClick = () => {
         const { id, markAsRead } = this.props;
+
         if (markAsRead) {
             markAsRead(id);
         }
@@ -29,14 +20,15 @@ class NotificationItem extends PureComponent {
 
     render() {
         const { type = 'default', html, value } = this.props;
-
-        const styleClass = type === 'urgent' ? styles.urgent : styles.default;
+        const textColorClass = type === 'urgent'
+            ? 'text-urgent-notification-item'
+            : 'text-default-notification-item';
 
         if (html) {
             return (
                 <li
                     ref={this.liRef}
-                    className={css(styleClass)}
+                    className={textColorClass}
                     data-notification-type={type}
                     dangerouslySetInnerHTML={html}
                     onClick={this.handleClick}
@@ -48,7 +40,7 @@ class NotificationItem extends PureComponent {
             return (
                 <li
                     ref={this.liRef}
-                    className={css(styleClass)}
+                    className={textColorClass}
                     data-notification-type={type}
                     dangerouslySetInnerHTML={{ __html: value }}
                     onClick={this.handleClick}
@@ -59,7 +51,7 @@ class NotificationItem extends PureComponent {
         return (
             <li
                 ref={this.liRef}
-                className={css(styleClass)}
+                className={textColorClass}
                 data-notification-type={type}
                 onClick={this.handleClick}
             >

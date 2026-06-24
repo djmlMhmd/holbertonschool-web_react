@@ -1,67 +1,40 @@
-import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 
 function Login() {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
-    const styles = StyleSheet.create({
-        AppBody: {
-            padding: '2rem',
-            flex: 1
-        },
-        AppBodyP: {
-            marginBottom: '1rem'
-        },
-        form: {
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            gap: '1rem',
-            '@media (max-width: 900px)': {
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                gap: '0.5rem'
-            }
-        },
-        formInput: {
-            padding: '0 0.25rem'
-        },
-        formButton: {
-            padding: '0 0.25rem',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }
-    });
-
     return (
-        <div className={css(styles.AppBody)}>
-            <p className={css(styles.AppBodyP)}>Login to access the full dashboard</p>
+        <div className="border-t-4 border-main-color px-10 py-7">
+            <p className="mb-8 text-2xl md:text-xl">Login to access the full dashboard</p>
 
-            <form className={css(styles.form)}>
-                <label htmlFor='email' onClick={() => emailRef.current && emailRef.current.focus()}>Email:</label>
+            <form className="flex flex-col items-start gap-3 md:flex-row md:items-center md:gap-2">
+                <label htmlFor="email" onClick={() => emailRef.current && emailRef.current.focus()}>
+                    Email:
+                </label>
                 <input
-                    id='email'
-                    name='email'
-                    type='email'
+                    id="email"
+                    name="email"
+                    type="email"
                     ref={emailRef}
-                    className={css(styles.formInput)}
+                    className="min-w-0 border border-gray-500 px-1 md:w-52"
                 />
 
-                <label htmlFor='password' onClick={() => passwordRef.current && passwordRef.current.focus()}>Password:</label>
+                <label htmlFor="password" onClick={() => passwordRef.current && passwordRef.current.focus()}>
+                    Password:
+                </label>
                 <input
-                    id='password'
-                    name='password'
-                    type='password'
+                    id="password"
+                    name="password"
+                    type="password"
                     role="textbox"
                     ref={passwordRef}
-                    className={css(styles.formInput)}
+                    className="min-w-0 border border-gray-500 px-1 md:w-52"
                 />
 
-                <button type='submit' className={css(styles.formButton)}>OK</button>
+                <button type="submit" className="border border-gray-500 px-1">
+                    OK
+                </button>
             </form>
         </div>
     );

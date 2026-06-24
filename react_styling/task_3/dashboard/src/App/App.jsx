@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import Notifications from '../Notifications/Notifications';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -12,50 +11,23 @@ import { getLatestNotification } from "../utils/utils";
 
 const LoginWithLogging = WithLogging(Login);
 const CourseListWithLogging = WithLogging(CourseList);
-
-// Styles Aphrodite
-const styles = StyleSheet.create({
-  // Reset CSS global
-  reset: {
-    '*': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-      scrollBehavior: 'smooth',
-    },
-    '*::before': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-    },
-    '*::after': {
-      boxSizing: 'border-box',
-      margin: 0,
-      padding: 0,
-    }
+const DEFAULT_COURSES = [
+  {
+    id: 1,
+    name: 'ES6',
+    credit: 60
   },
-  app: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
+  {
+    id: 2,
+    name: 'Webpack',
+    credit: 20
   },
-  body: {
-    flex: 1,
-    padding: '20px',
-  },
-  footer: {
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontFamily: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-    fontSize: '0.8rem',
-    fontWeight: 200,
-    fontStyle: 'italic',
-    borderTop: '0.25rem solid #e1003c',
+  {
+    id: 3,
+    name: 'React',
+    credit: 40
   }
-});
+];
 
 class App extends Component {
   static defaultProps = {
@@ -71,28 +43,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    document.addEventListener("keydown", this.handleKeyDown);
-
-    const resetCSS = `
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        scroll-behavior: smooth;
-      }
-      
-      #root {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-    `;
-
-    const style = document.createElement('style');
-    style.textContent = resetCSS;
-    document.head.appendChild(style);
+    document.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
@@ -101,6 +52,8 @@ class App extends Component {
 
   render() {
     const { isLoggedIn = false } = this.props;
+    const hasCoursesListProp = Object.prototype.hasOwnProperty.call(this.props, 'coursesList');
+    const coursesList = hasCoursesListProp ? this.props.coursesList : DEFAULT_COURSES;
 
     const notificationsList = [
       {
@@ -120,31 +73,13 @@ class App extends Component {
       }
     ];
 
-    const coursesList = [
-      {
-        id: 1,
-        name: 'ES6',
-        credit: 60
-      },
-      {
-        id: 2,
-        name: 'Webpack',
-        credit: 20
-      },
-      {
-        id: 3,
-        name: 'React',
-        credit: 40
-      }
-    ];
-
     return (
-      <div className={css(styles.app)}>
+      <div className="min-h-screen flex flex-col">
         <Notifications notifications={notificationsList} />
 
         <Header />
 
-        <div className={css(styles.body)}>
+        <main className="flex-1 px-3 py-5">
           {isLoggedIn ? (
             <BodySectionWithMarginBottom title="Course list">
               <CourseListWithLogging courses={coursesList} />
@@ -158,11 +93,9 @@ class App extends Component {
           <BodySection title="News from the School">
             <p>Holberton School News goes here</p>
           </BodySection>
-        </div>
+        </main>
 
-        <div className={css(styles.footer)}>
-          <Footer />
-        </div>
+        <Footer />
       </div>
     );
   }

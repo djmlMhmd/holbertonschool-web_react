@@ -2,15 +2,6 @@ import React from 'react';
 import Login from './Login';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { StyleSheetTestUtils } from 'aphrodite';
-
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
-
-afterEach(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
 
 test('renders 2 labels, 2 inputs and 1 button', () => {
   const { container } = render(<Login />);

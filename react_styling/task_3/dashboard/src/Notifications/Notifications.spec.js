@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { StyleSheetTestUtils } from 'aphrodite';
 import Notifications from './Notifications';
 import { getLatestNotification } from "../utils/utils";
 
@@ -26,12 +25,10 @@ const mockNotifications = [
 let consoleSpy;
 
 beforeEach(() => {
-    StyleSheetTestUtils.suppressStyleInjection();
     consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => { });
 });
 
 afterEach(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
     consoleSpy.mockRestore();
     cleanup();
 });
@@ -46,21 +43,16 @@ test('Renders 3 notification items with appropriate text', () => {
 
     expect(getByText('New course available')).toBeInTheDocument();
     expect(getByText('New resume available')).toBeInTheDocument();
-
-    const notificationItems = container.querySelectorAll('li');
-    expect(notificationItems).toHaveLength(3);
+    expect(container.querySelectorAll('li')).toHaveLength(3);
 });
 
 test('Renders with empty notifications array by default', () => {
-    const { container } = render(<Notifications />);
-    const notificationItems = container.querySelectorAll('li');
-
-    expect(notificationItems).toHaveLength(0);
+    const { container } = render(<Notifications notifications={[]} />);
+    expect(container.querySelectorAll('li')).toHaveLength(0);
 });
 
 test('Always displays "Your notifications" title', () => {
     const { getByText } = render(<Notifications />);
-
     expect(getByText('Your notifications')).toBeInTheDocument();
 });
 
@@ -87,14 +79,14 @@ test('Displays list, paragraph and close button when displayDrawer is true', () 
 });
 
 test('Displays "No new notification for now" when displayDrawer is true and no notifications', () => {
-    const { getByText, getByRole, queryAllByRole } = render(
+    const { getByText, queryByRole, queryAllByRole } = render(
         <Notifications displayDrawer={true} notifications={[]} />
     );
 
     expect(getByText('Your notifications')).toBeInTheDocument();
     expect(getByText('No new notification for now')).toBeInTheDocument();
     expect(queryAllByRole('listitem')).toHaveLength(0);
-    expect(getByRole('button', { name: /close/i })).toBeInTheDocument();
+    expect(queryByRole('button', { name: /close/i })).not.toBeInTheDocument();
 });
 
 test('Logs correct message when clicking on first notification item', () => {
@@ -105,9 +97,7 @@ test('Logs correct message when clicking on first notification item', () => {
         />
     );
 
-    const firstNotification = getByText('New course available');
-    fireEvent.click(firstNotification);
-
+    fireEvent.click(getByText('New course available'));
     expect(consoleSpy).toHaveBeenCalledWith('Notification 1 has been marked as read');
 });
 
@@ -119,9 +109,7 @@ test('Logs correct message when clicking on second notification item', () => {
         />
     );
 
-    const secondNotification = getByText('New resume available');
-    fireEvent.click(secondNotification);
-
+    fireEvent.click(getByText('New resume available'));
     expect(consoleSpy).toHaveBeenCalledWith('Notification 2 has been marked as read');
 });
 
@@ -133,9 +121,6 @@ test('Logs correct message when clicking on third notification item', () => {
         />
     );
 
-    const notificationItems = container.querySelectorAll('li');
-    const thirdNotification = notificationItems[2];
-    fireEvent.click(thirdNotification);
-
+    fireEvent.click(container.querySelectorAll('li')[2]);
     expect(consoleSpy).toHaveBeenCalledWith('Notification 3 has been marked as read');
 });

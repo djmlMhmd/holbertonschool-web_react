@@ -1,17 +1,8 @@
 import React from 'react';
 import App from './App.jsx';
 import { render, screen } from '@testing-library/react';
-import { StyleSheetTestUtils } from 'aphrodite';
 
 describe('App Component Tests', () => {
-    beforeEach(() => {
-        StyleSheetTestUtils.suppressStyleInjection();
-    });
-
-    afterEach(() => {
-        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-    });
-
     test('Renders Notifications component', () => {
         render(<App />);
         const notificationTitle = screen.getByText(/your notifications/i);
@@ -86,36 +77,34 @@ describe('App Keyboard Events Tests', () => {
     let logOutMock;
 
     beforeEach(() => {
-        StyleSheetTestUtils.suppressStyleInjection();
-        alertMock = jest.spyOn(window, "alert").mockImplementation(() => { });
+        alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
         logOutMock = jest.fn();
     });
 
     afterEach(() => {
-        StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
         alertMock.mockRestore();
     });
 
-    test("LogOut when ctrl + h", () => {
+    test('LogOut when ctrl + h', () => {
         render(<App logOut={logOutMock} />);
 
-        const keyboardEvent = new KeyboardEvent("keydown", {
-            key: "h",
+        const keyboardEvent = new KeyboardEvent('keydown', {
+            key: 'h',
             ctrlKey: true,
         });
         document.dispatchEvent(keyboardEvent);
         expect(logOutMock).toHaveBeenCalledTimes(1);
     });
 
-    test("Alert when ctrl + h", () => {
+    test('Alert when ctrl + h', () => {
         render(<App logOut={logOutMock} />);
 
-        const keyboardEvent = new KeyboardEvent("keydown", {
-            key: "h",
+        const keyboardEvent = new KeyboardEvent('keydown', {
+            key: 'h',
             ctrlKey: true,
         });
         document.dispatchEvent(keyboardEvent);
 
-        expect(alertMock).toHaveBeenCalledWith("Logging you out");
+        expect(alertMock).toHaveBeenCalledWith('Logging you out');
     });
 });
