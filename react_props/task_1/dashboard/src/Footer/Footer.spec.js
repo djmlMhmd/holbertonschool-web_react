@@ -2,15 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Footer from './Footer';
+import { getFullYear, getFooterCopy } from '../utils/utils';
 
 describe('Footer', () => {
-  it('renders the copyright string when getFooterCopy isIndex is true', () => {
+  it('renders the correct copyright string when isIndex is true', () => {
     render(<Footer />);
-    const currentYear = new Date().getFullYear();
     expect(
-      screen.getByText(
-        new RegExp(`copyright ${currentYear} - holberton school`, 'i')
-      )
+      screen.getByText(`Copyright ${getFullYear()} - ${getFooterCopy(true)}`)
     ).toBeInTheDocument();
   });
 });

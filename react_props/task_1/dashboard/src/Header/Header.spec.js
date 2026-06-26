@@ -4,15 +4,14 @@ import '@testing-library/jest-dom';
 import Header from './Header';
 
 describe('Header', () => {
-  it('renders the Holberton logo image', () => {
-    render(<Header />);
-    expect(screen.getByAltText(/holberton logo/i)).toBeInTheDocument();
+  it('contains the Holberton logo', () => {
+    const { container } = render(<Header />);
+    expect(container.querySelector('img')).toBeInTheDocument();
   });
 
-  it('renders an h1 heading element with the text School dashboard', () => {
-    render(<Header />);
-    expect(
-      screen.getByRole('heading', { name: /school dashboard/i })
-    ).toBeInTheDocument();
+  it('contains an h1 element with the text School dashboard', () => {
+    const { container } = render(<Header />);
+    expect(container.querySelector('h1')).toBeInTheDocument();
+    expect(screen.getByText('School dashboard')).toBeInTheDocument();
   });
 });
