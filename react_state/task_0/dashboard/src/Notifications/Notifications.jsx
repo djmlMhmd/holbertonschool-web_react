@@ -42,29 +42,44 @@ class  Notifications extends React.Component {
 
     return(
     <>
-        <div className={css(styles.menuItem)} onClick={handleDisplayDrawer} id='menuItem'>Your notifications</div>
+        <div
+          className={`menuItem ${css(styles.menuItem)}`}
+          onClick={handleDisplayDrawer}
+          id='menuItem'
+        >
+          Your notifications
+        </div>
       { displayDrawer && (
-        <div className={css(styles.notificationsContainer)} >
-          <button className={css(styles.closeButton)} aria-label="Close" onClick={handleHideDrawer}>
+        <div className={`Notifications ${css(styles.notificationsContainer)}`}>
+          <button
+            type="button"
+            className={css(styles.closeButton)}
+            aria-label="Close"
+            onClick={handleHideDrawer}
+          >
             <img
-            src={close} alt="close-icon"
-            style={{ height: '10px', width: '10px' }}
+              src={close}
+              alt="close-icon"
+              style={{ height: '10px', width: '10px' }}
             />
           </button>
           {listNotifications.length > 0 ? (
             <Fragment>
-            <p>Here is the list of notifications</p>
-            <ul>
-              {listNotifications.map((notification) => (
-              <NotificationItem
-                key={notification.id}
-                type={notification.type}
-                value={notification.value}
-                html={notification.html} />
-              ))}
-            </ul>
+              <p>Here is the list of notifications</p>
+              <ul>
+                {listNotifications.map((notification) => (
+                  <NotificationItem
+                    key={notification.id}
+                    type={notification.type}
+                    value={notification.value}
+                    html={notification.html}
+                  />
+                ))}
+              </ul>
             </Fragment>
-          ) : (<p>No new notification for now</p>)}
+          ) : (
+            <p>No new notification for now</p>
+          )}
         </div>
       )}
     </>
