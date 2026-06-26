@@ -1,32 +1,82 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import Login from './Login';
 
-const wrapper = shallow(<Login/>);
+describe('<Login />', () => {
+  it('has the default state values set in the constructor', () => {
+    const wrapper = shallow(<Login />);
 
-describe(<Login/>, ()=>
-{
-    it('renders login div', ()=>{
-        shallow(<Login/>);
-        expect(wrapper.exists());
+    expect(wrapper.state('isLoggedIn')).toBe(false);
+    expect(wrapper.state('email')).toBe('');
+    expect(wrapper.state('password')).toBe('');
+    expect(wrapper.state('enableSubmit')).toBe(false);
+  });
+
+  it('renders a form with 2 labels, 2 inputs fields, and 1 submit input', () => {
+    const wrapper = shallow(<Login />);
+
+    expect(wrapper.find('form')).toHaveLength(1);
+    expect(wrapper.find('label')).toHaveLength(2);
+    expect(wrapper.find('input[type="email"]')).toHaveLength(1);
+    expect(wrapper.find('input[type="password"]')).toHaveLength(1);
+    expect(wrapper.find('input[type="submit"]')).toHaveLength(1);
+  });
+
+  it('disables the submit button by default', () => {
+    const wrapper = shallow(<Login />);
+
+    expect(wrapper.find('input[type="submit"]').prop('disabled')).toBe(true);
+  });
+
+  it('updates email state when typing in the email input', () => {
+    const wrapper = shallow(<Login />);
+
+    wrapper.find('input[type="email"]').simulate('change', {
+      target: { value: 'test@test.com' },
     });
-    it('renders 2 input and 2 label', ()=>{
-     expect(wrapper.find('input').length).toEqual(2);
-     expect(wrapper.find('label').length).toEqual(2);
+
+    expect(wrapper.state('email')).toBe('test@test.com');
+  });
+
+  it('updates password state when typing in the password input', () => {
+    const wrapper = shallow(<Login />);
+
+    wrapper.find('input[type="password"]').simulate('change', {
+      target: { value: 'password123' },
     });
-    it('form working', () => {
-        const email = wrapper.find('#email');
-        const password = wrapper.find('#password');
-        email.simulate('change', {
-          target: { name: 'email', value: 'something@domain.com' },
-        });
-        let submit = wrapper.find("form button[type='submit']");
-        expect(submit.prop('disabled')).toEqual(true);
-        password.simulate('change', {
-          target: { name: 'password', value: 'password' },
-        });
-        submit = wrapper.find("form button[type='submit']");
-        expect(submit.prop('disabled')).toEqual(false);
-      });
-}); 
+
+    expect(wrapper.state('password')).toBe('password123');
+  });
+
+  it('enables the submit button only when email is valid and password has at least 8 characters', () => {
+    const wrapper = shallow(<Login />);
+
+    wrapper.find('input[type="email"]').simulate('change', {
+      target: { value: 'invalid-email' },
+    });
+    wrapper.find('input[type="password"]').simulate('change', {
+      target: { value: 'short' },
+    });
+
+    expect(wrapper.find('input[type="submit"]').prop('disabled')).toBe(true);
+
+    wrapper.find('input[type="email"]').simulate('change', {
+      target: { value: 'user@example.com' },
+    });
+    wrapper.find('input[type="password"]').simulate('change', {
+      target: { value: 'password123' },
+    });
+
+    expect(wrapper.find('input[type="submit"]').prop('disabled')).toBe(false);
+  });
+
+  it('sets isLoggedIn to true when the form is submitted', () => {
+    const wrapper = shallow(<Login />);
+    const preventDefault = jest.fn();
+
+    wrapper.find('form').simulate('submit', { preventDefault });
+
+    expect(preventDefault).toHaveBeenCalled();
+    expect(wrapper.state('isLoggedIn')).toBe(true);
+  });
+});
