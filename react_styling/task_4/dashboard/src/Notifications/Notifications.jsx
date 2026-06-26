@@ -15,7 +15,7 @@ class Notifications extends Component {
     }
 
     render() {
-        const { notifications = [], displayDrawer = false } = this.props;
+        const { notifications = [], displayDrawer = true } = this.props;
         let content = <p className="text-[1.05rem] min-[912px]:text-base">No new notification for now</p>;
 
         if (notifications.length > 0) {
