@@ -81,7 +81,7 @@ class App extends Component {
 
         <main className="flex flex-1 flex-col px-2 py-3 min-[520px]:px-4 min-[520px]:py-4 md:px-5 md:py-5">
           {isLoggedIn ? (
-            <BodySectionWithMarginBottom title="Course list">
+            <BodySectionWithMarginBottom title="Course list" className="pt-3 min-[520px]:pt-4">
               <CourseListWithLogging courses={coursesList} />
             </BodySectionWithMarginBottom>
           ) : (
