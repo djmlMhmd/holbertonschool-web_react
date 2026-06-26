@@ -1,5 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
+import { render, screen, fireEvent } from '@testing-library/react';
 import App from './App';
 import Header from '../Header/Header';
 import Login from '../Login/Login';
@@ -56,5 +57,17 @@ describe('<App />', () => {
     wrapper.instance().handleDisplayDrawer();
     wrapper.instance().handleHideDrawer();
     expect(wrapper.state('displayDrawer')).toBe(false);
+  });
+
+  it('shows and hides the notifications panel when clicking the menu item and close button', () => {
+    render(<App />);
+
+    expect(screen.queryByText('Here is the list of notifications')).toBeNull();
+
+    fireEvent.click(screen.getByText('Your notifications'));
+    expect(screen.getByText('Here is the list of notifications')).not.toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByText('Here is the list of notifications')).toBeNull();
   });
 });
