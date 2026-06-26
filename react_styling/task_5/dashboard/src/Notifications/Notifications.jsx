@@ -61,7 +61,7 @@ class Notifications extends Component {
         return (
             <div className="root-notifications">
                 <div className="notification-container absolute top-0 right-0 z-40 flex w-full flex-col items-end px-2 pt-1 min-[520px]:px-3 min-[520px]:pt-2">
-                    <div className={`notifications-title mb-1 text-right text-sm leading-none min-[520px]:text-base min-[520px]:leading-normal ${displayDrawer ? 'hidden min-[912px]:block' : 'block'} ${shouldBounce ? 'animate-bounce' : ''}`}>
+                    <div className={`notification-title mb-1 text-right text-sm leading-none min-[520px]:text-base min-[520px]:leading-normal ${displayDrawer ? 'hidden min-[912px]:block' : 'block'} ${shouldBounce ? 'animate-bounce' : ''}`}>
                         Your notifications
                     </div>
 
