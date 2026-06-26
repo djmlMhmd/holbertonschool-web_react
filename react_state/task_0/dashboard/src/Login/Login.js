@@ -4,53 +4,53 @@ import { StyleSheet, css } from 'aphrodite';
 
 function Login() {
   return (
-    <body className={App_body.Appbody}>
+    <div className={css(styles.appBody)}>
       <p>Login to access the full dashboard</p>
-      <div className="login">
-        <label htmlFor="username"  className={css(App_body.label_style)}>
+      <div className={css(styles.login)}>
+        <label htmlFor="username" className={css(styles.labelStyle)}>
           Email:
-          <input></input>
+          <input id="username" />
         </label>
-        <label htmlFor="password"  className={css(App_body.label_style)}>
+        <label htmlFor="password" className={css(styles.labelStyle)}>
           Password:
-          <input></input>
+          <input id="password" />
         </label>
-        <button className={App_body.AppBodyButton}>Ok</button>
-      </div>  
-    </body>
+        <button className={css(styles.appBodyButton)}>Ok</button>
+      </div>
+    </div>
   );
 }
 
-const App_body = css({
-  Appbody: {
-    margintop: '30px',
-    marginleft: '30px',
+const styles = StyleSheet.create({
+  appBody: {
+    marginTop: '30px',
+    marginLeft: '30px',
     '@media (max-width: 900px)': {
       minHeight: 0,
       margin: 0,
-    }
+    },
   },
   login: {
     textAlign: 'center',
-    height: '22px',
-    width: '30px',
     '@media (max-width: 900px)': {
-      display: 'block'
+      display: 'block',
     },
-    label_style: {
-      '@media (max-width: 900px)': {
-        display: 'block',
-    }
+  },
+  labelStyle: {
+    marginRight: '10px',
+    '@media (max-width: 900px)': {
+      display: 'block',
+      marginBottom: '10px',
     },
-    AppBodyButton: {
-      textAlign: 'center',
-      height: '22px',
-      width: '30px',
-      '@media (max-width: 900px)': {
-        display: 'block'
-      }
-  }
-}
-    ,
-  });
-export default Login;       
+  },
+  appBodyButton: {
+    textAlign: 'center',
+    minHeight: '22px',
+    minWidth: '30px',
+    '@media (max-width: 900px)': {
+      display: 'block',
+    },
+  },
+});
+
+export default Login;

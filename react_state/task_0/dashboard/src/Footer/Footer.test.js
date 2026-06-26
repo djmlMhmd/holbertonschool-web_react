@@ -1,18 +1,17 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import Footer from './Footer';
 
 const wrapper = shallow(<Footer/>);
 
-edscribe(<Footer/>, ()=>
+describe('<Footer />', ()=>
 {
     it('render footer component', ()=>{
         shallow(<Footer/>);
-        expect(wrapper.exists());
+        expect(wrapper.exists()).toBe(true);
     });
     it('displays copyright text', ()=>{
-        expect(wrapper.text()).contains('Copyright');
+        expect(wrapper.text()).toContain('Copyright');
     });
 }
 );

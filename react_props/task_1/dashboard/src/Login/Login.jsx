@@ -20,7 +20,7 @@ function Login() {
                 <input type="email" id="email" name="email" ref={emailRef} />
 
                 <label onClick={() => focusInput(passwordRef)} htmlFor="password">
-                    Password
+                    Password:
                 </label>
                 <input type="password" id="password" name="password" ref={passwordRef} />
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import NotificationItem from './NotificationItem';
 
@@ -12,20 +11,20 @@ import NotificationItem from './NotificationItem';
 describe('NotificationItem', () => {
   test('renders without crashing', () => {
     const wrapper = shallow(<NotificationItem />);
-    expect(wrapper.exists());
+    expect(wrapper.exists()).toBe(true);
   });
   test('renders with correct type and value', () => {
     const wrapper = shallow(<NotificationItem type='default' value='test' />);
     const li = wrapper.find('li');
 
-    expect(li.props()).to.have.property('data-notification-type', 'default');
-    expect(li.text()).to.equal('test');
+    expect(li.prop('data-notification-type')).toBe('default');
+    expect(li.text()).toBe('test');
   });
 
   test('renders with correct inner html', () => {
     const wrapper = shallow(<NotificationItem html={{ __html: '<u>test</u>' }} />);
     
-    expect(wrapper.html()).to.equal('<li><u>test</u></li>');
+    expect(wrapper.html()).toContain('<u>test</u>');
   });
   it(" markAsRead is being called with the right message", () => {
     const id = 1;

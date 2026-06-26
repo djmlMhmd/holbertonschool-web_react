@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { oneOfType } from 'prop-types';
-import { prototype } from 'enzyme-adapter-react-16';
 import { StyleSheet, css } from 'aphrodite';
 
 function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
@@ -29,7 +28,7 @@ function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
 CourseListRow.propTypes ={
   isHeader: PropTypes.bool,
   textFirstCell: PropTypes.string,
-  textSecondCell: oneOfType([PropTypes.string, prototype.number])
+  textSecondCell: oneOfType([PropTypes.string, PropTypes.number])
 };
 
 CourseListRow.defaultProps = {

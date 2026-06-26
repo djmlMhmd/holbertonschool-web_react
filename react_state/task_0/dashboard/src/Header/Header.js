@@ -4,20 +4,22 @@ import { StyleSheet, css } from 'aphrodite';
 
 export default function Header() {
   return (
-    <header className={css(AppHeader)}>
+    <header className={css(styles.appHeader)}>
       <img src={logo} className="App-logo" alt="logo" />
       <h1>School dashboard</h1>
     </header>
   );
 }
 
-const AppHeader = css({
-  backgroundColor: '#282c34',
-  minHeight: '100vh',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: 'calc(10px + 2vmin)',
-  color: 'white'
+const styles = StyleSheet.create({
+  appHeader: {
+    backgroundColor: '#282c34',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 'calc(10px + 2vmin)',
+    color: 'white',
+  },
 });

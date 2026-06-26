@@ -17,7 +17,7 @@ function Login() {
                 <label onClick={() => focusInput(emailRef)} htmlFor="email">Email: </label>
                 <input type="email" id="email" name="email" ref={emailRef} />
 
-                <label onClick={() => focusInput(passwordRef)} htmlFor="password">Password</label>
+                <label onClick={() => focusInput(passwordRef)} htmlFor="password">Password:</label>
                 <input type="password" id="password" name="password" ref={passwordRef} />
 
                 <button>OK</button>

@@ -21,7 +21,7 @@ describe('Login', () => {
   it('focuses the password input when the password label is clicked', async () => {
     render(<Login />);
     const passwordInput = screen.getByLabelText(/password/i);
-    fireEvent.click(screen.getByText('Password'));
+    fireEvent.click(screen.getByText('Password:'));
     expect(passwordInput).toHaveFocus();
   });
 });

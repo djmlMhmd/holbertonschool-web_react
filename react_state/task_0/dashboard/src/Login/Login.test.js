@@ -1,15 +1,14 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import { expect } from 'chai';
 import Login from './Login';
 
 const wrapper = shallow(<Login/>);
 
-describe(<Login/>, ()=>
+describe('<Login />', ()=>
 {
     it('renders login div', ()=>{
         shallow(<Login/>);
-        expect(wrapper.exists());
+        expect(wrapper.exists()).toBe(true);
     });
     it('renders 2 input and 2 label', ()=>{
      expect(wrapper.find('input').length).toEqual(2);

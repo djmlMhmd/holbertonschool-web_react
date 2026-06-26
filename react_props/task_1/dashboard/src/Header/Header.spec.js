@@ -5,8 +5,8 @@ import Header from './Header';
 
 describe('Header', () => {
   it('contains the Holberton logo', () => {
-    const { container } = render(<Header />);
-    expect(container.querySelector('img')).toBeInTheDocument();
+    render(<Header />);
+    expect(screen.getByAltText('Holberton logo')).toBeInTheDocument();
   });
 
   it('contains an h1 element with the text School dashboard', () => {
