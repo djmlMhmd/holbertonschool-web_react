@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Roboto', sans-serif;
+  --color-main-color: #e1003c;
+  --color-default-notification-item: blue;
+  --color-urgent-notification-item: red;
+  --color-table-header: #deb5b5;
+  --color-table-rows: #CDCDCD;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100vh;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+  }
+
+  button,
+  label,
+  strong,
+  b {
+    font-family: var(--font-sans);
+    font-weight: 500;
+  }
+}

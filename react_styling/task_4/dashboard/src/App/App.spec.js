@@ -76,7 +76,7 @@ describe('App Component Tests', () => {
         const newsTitle = screen.getByRole('heading', { name: /news from the school/i });
         expect(newsTitle).toBeInTheDocument();
 
-        const newsParagraph = screen.getByText(/holberton school news goes here/i);
+        const newsParagraph = screen.getByText(/ipsum lorem ipsum dolor sit amet/i);
         expect(newsParagraph).toBeInTheDocument();
     });
 });

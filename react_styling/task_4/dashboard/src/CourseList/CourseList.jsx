@@ -1,65 +1,23 @@
 import React from 'react';
 import CourseListRow from './CourseListRow';
-import { StyleSheet, css } from 'aphrodite';
 
 function CourseList({ courses = [] }) {
-    const styles = StyleSheet.create({
-        CourseListContainer: {
-            width: '100%',
-            height: '100%',
-            padding: '0 5rem',
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        },
-        CourseList: {
-            width: '100%',
-            borderCollapse: 'collapse',
-            // Styles pour les th
-            ':nth-child(1n) th': {
-                textAlign: 'center',
-                padding: '0.20rem',
-                border: '1px solid black'
-            },
-            // Styles pour les td
-            ':nth-child(1n) td': {
-                textAlign: 'left',
-                padding: '0.20rem',
-                border: '1px solid black'
-            },
-            // Première colonne (th et td)
-            ':nth-child(1n) th:first-child': {
-                width: '60%'
-            },
-            ':nth-child(1n) td:first-child': {
-                width: '60%'
-            },
-            // Dernière colonne (th et td)
-            ':nth-child(1n) th:last-child': {
-                width: '40%'
-            },
-            ':nth-child(1n) td:last-child': {
-                width: '40%'
-            }
-        }
-    });
-
     if (courses.length === 0) {
         return (
-            <div className={css(styles.CourseListContainer)}>
-                <table className={css(styles.CourseList)}>
-                    <tbody>
-                        <CourseListRow textFirstCell="No course available yet" />
-                    </tbody>
+            <div className="mx-auto my-8 w-[78%] min-[912px]:mb-12 min-[912px]:mt-24 min-[912px]:w-4/5">
+                <span className="sr-only">Available courses</span>
+                <table id="CourseList" className="w-full border-collapse text-sm min-[520px]:text-base">
+                    <thead>
+                        <CourseListRow textFirstCell="No course available yet" isHeader={true} />
+                    </thead>
                 </table>
             </div>
         );
     }
 
     return (
-        <div className={css(styles.CourseListContainer)}>
-            <table className={css(styles.CourseList)}>
+        <div className="mx-auto my-8 w-[78%] min-[912px]:my-12 min-[912px]:flex min-[912px]:min-h-[22rem] min-[912px]:w-4/5 min-[912px]:items-center">
+            <table id="CourseList" className="w-full border-collapse text-sm min-[520px]:text-base">
                 <thead>
                     <CourseListRow textFirstCell="Available courses" isHeader={true} />
                     <CourseListRow

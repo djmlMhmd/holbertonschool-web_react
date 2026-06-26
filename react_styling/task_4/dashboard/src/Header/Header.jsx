@@ -1,31 +1,13 @@
 import React from 'react';
-import { StyleSheet, css } from 'aphrodite';
 import holbertonLogo from '../assets/holberton-logo.jpg';
 
 function Header() {
-    const styles = StyleSheet.create({
-        AppHeader: {
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            borderBottom: '0.25rem solid #e1003c'
-        },
-        AppHeaderH1: {
-            fontFamily: "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
-            fontWeight: 600,
-            letterSpacing: '0.025rem',
-            color: '#e1003c'
-        },
-        AppLogo: {
-            height: '15rem'
-        }
-    });
-
     return (
-        <header className={css(styles.AppHeader)}>
-            <img className={css(styles.AppLogo)} src={holbertonLogo} alt='holberton logo' />
-            <h1 className={css(styles.AppHeaderH1)}>School Dashboard</h1>
+        <header className="flex flex-col items-center border-b-4 border-main-color px-4 pb-5 pt-2 text-center min-[520px]:pb-6 min-[912px]:flex-row min-[912px]:justify-start min-[912px]:text-left">
+            <img className="h-44 min-[520px]:h-52 min-[912px]:h-60" src={holbertonLogo} alt="holberton logo" />
+            <h1 className="whitespace-nowrap text-[1.75rem] font-bold tracking-wide text-main-color min-[520px]:text-5xl min-[912px]:text-6xl">
+                School Dashboard
+            </h1>
         </header>
     );
 }
