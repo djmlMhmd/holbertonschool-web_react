@@ -74,4 +74,12 @@ describe('App component', () => {
 
         alertSpy.mockRestore();
     });
+
+    it('renders the News from the School section with its paragraph by default', () => {
+        render(<App />);
+        expect(
+            screen.getByRole('heading', { level: 2, name: /news from the school/i })
+        ).toBeInTheDocument();
+        expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument();
+    });
 });
