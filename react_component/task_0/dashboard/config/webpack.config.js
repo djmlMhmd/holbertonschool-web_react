@@ -8,6 +8,9 @@ module.exports = {
     filename: "bundle.js",
     path: path.resolve("./dist"),
   },
+  resolve: {
+    extensions: [".js", ".jsx"],
+  },
   devServer: {
     hot: true,
     contentBase: path.resolve("./dist"),
