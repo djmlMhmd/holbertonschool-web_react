@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "react_component-task5",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--prefix", "react_component/task_5/dashboard", "--", "--port", "5199"],
+      "port": 5199,
+      "autoPort": false
+    }
+  ]
+}
