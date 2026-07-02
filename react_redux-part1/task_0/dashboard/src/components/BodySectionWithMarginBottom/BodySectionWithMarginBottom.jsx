@@ -1,16 +1,21 @@
-import { Component } from "react";
-import BodySection from "../BodySection/BodySection";
+import BodySection from '../BodySection/BodySection';
+import { StyleSheet, css } from 'aphrodite';
 
-class BodySectionWithMarginBottom extends Component {
-  render() {
-    return(
-      <div className="bodySectionWithMargin">
-        <BodySection title={this.props.title}>
-          {this.props.children}
-        </BodySection>
-      </div>
-    )
-  }
+function BodySectionWithMarginBottom({ title, children }) {
+  const styles = StyleSheet.create({
+    bodySectionWithMargin: {
+      // Adds spacing below the section.
+      marginBottom: '2rem'
+    }
+  });
+
+  return (
+    <div className={css(styles.bodySectionWithMargin)}>
+      <BodySection title={title}>
+        {children}
+      </BodySection>
+    </div>
+  );
 }
 
 export default BodySectionWithMarginBottom;

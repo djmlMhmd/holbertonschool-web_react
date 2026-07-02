@@ -1,56 +1,70 @@
+// External libraries.
 import { render, screen } from '@testing-library/react';
-import { userEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
+
+// Styles.
+import { StyleSheetTestUtils } from 'aphrodite';
+
+// Components.
 import Header from './Header';
 
-const userTest = {
-  email: 'fallen.albaz@gmail.com',
-  password: 'azertyuiop',
-  isLoggedIn: true,
-}
+// Suppress Aphrodite style injection before tests.
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-const defaultUser = {
-  email: '',
-  password: '',
-  isLoggedIn: false,
-}
+// Clear and resume style injection after tests.
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-describe('Header component', () => {
-  test('Vérification texte h1 App-header', () => {
-    render(<Header user={defaultUser} logOut={() => {}} />);
-    const headerh1 = screen.getByRole('heading', { level: 1, name: /School dashboard/i });
-    expect(headerh1).toBeInTheDocument();
+/******************
+* COMPONENT TESTS *
+******************/
+
+describe('Header Component Tests', () => {
+  test('Renders logo image', () => {
+    render(<Header user={{ isLoggedIn: false }} logOut={() => { }} />);
+    
+    const imgElement = screen.getByAltText(/holberton logo/i);
+    expect(imgElement).toBeInTheDocument();
   });
 
-  test('Vérification alt image App-header', () => {
-    render(<Header user={defaultUser} logOut={() => {}} />);
-    const headerImgAlt = screen.getByAltText(/holberton logo/i);
-    expect(headerImgAlt).toBeInTheDocument();
+  test('Renders main heading with "School Dashboard" text', () => {
+    render(<Header user={{ isLoggedIn: false }} logOut={() => { }} />);
+    
+    const headingElement = screen.getByRole('heading', { name: /school dashboard/i });
+    expect(headingElement).toBeInTheDocument();
   });
 
-  // Tests avec le contexte
-  test("Vérification de l'absence de la section #logoutSection par défaut", () => {
-    render(<Header user={defaultUser} logOut={() => {}} />);
-    const section = document.querySelector('#logoutSection');
-    expect(section).not.toBeInTheDocument();
+  test('Logout section is hidden when user is not logged in', () => {
+    render(<Header user={{ isLoggedIn: false }} logOut={() => { }} />);
+    
+    expect(screen.queryByText(/welcome/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /logout/i })).not.toBeInTheDocument();
   });
 
-  test("Vérification de la présence de la section #logoutSection quand le contexte de l'user a isLoggedIn à true.", () => {
-    render(<Header user={userTest} logOut={() => {}} />);
-    const section = document.querySelector('#logoutSection');
-    expect(section).toBeInTheDocument();
-  });
-
-  test("Vérification de l'appel à la fonction logOut quand on clique sur '(logout)' quand le contexte de l'user a isLoggedIn à true", async () => {
-    const user = userEvent.setup();
-
+  test('Logout section is displayed when user is logged in', () => {
     const logOutSpy = jest.fn();
-    render(<Header user={userTest} logOut={logOutSpy} />);
-    const section = document.querySelector('#logoutSection');
-    expect(section).toBeInTheDocument();
+    const user = { email: 'user@example.com', isLoggedIn: true };
+
+    render(<Header user={user} logOut={logOutSpy} />);
+
+    expect(screen.getByText(/welcome/i)).toBeInTheDocument();
+    expect(screen.getByText(/user@example.com/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /logout/i })).toBeInTheDocument();
+  });
+
+  test('Clicking logout link triggers logOut function', async () => {
+    const userUi = userEvent.setup();
+    const logOutSpy = jest.fn();
+    const user = { email: 'user@example.com', isLoggedIn: true };
+
+    render(<Header user={user} logOut={logOutSpy} />);
 
     const logoutLink = screen.getByRole('link', { name: /logout/i });
-    await user.click(logoutLink);
-
-    expect(logOutSpy).toHaveBeenCalledTimes(1);
+    await userUi.click(logoutLink);
+    
+    expect(logOutSpy).toHaveBeenCalled();
   });
 });

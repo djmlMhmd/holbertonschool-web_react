@@ -1,23 +1,35 @@
-import { getCurrentYear, getFooterCopy, getLatestNotification } from './utils';
+// Utils.
+import { getCurrentYear, getFooterCopy, getLatestNotification } from "./utils";
 
-describe('getCurrentYear', () => {
-  it('Should return the correct current year', () => {
-    expect(getCurrentYear()).toBe(new Date().getFullYear());
-  });
-});
+/******************
+* UTILS FUNCTIONS *
+******************/
 
-describe('getFooterCopy', () => {
-  it('Should return the correct string when argument is true', () => {
-    expect(getFooterCopy(true)).toEqual('Holberton School');
-  });
+describe('Utils functions', () => {
+    // Tests for getCurrentYear function.
+    describe('getCurrentYear', () => {
+        it('should return the current year', () => {
+            const currentYear = new Date().getFullYear();
+            expect(getCurrentYear()).toBe(currentYear);
+        });
+    });
 
-  it('Should return the correct string when argument is false', () => {
-    expect(getFooterCopy(false)).toEqual('Holberton School main dashboard');
-  });
-});
+    // Tests for getFooterCopy function.
+    describe('getFooterCopy', () => {
+        it('Should return "Holberton School" when argument is true', () => {
+            expect(getFooterCopy(true)).toBe('Holberton School');
+        });
 
-describe('getLatestNotification', () => {
-  it('Should return the correct notification string', () => {
-    expect(getLatestNotification()).toEqual('<strong>Urgent requirement</strong> - complete by EOD');
-  });
+        it('Should return "Holberton School main dashboard" when argument is false', () => {
+            expect(getFooterCopy(false)).toBe('Holberton School main dashboard');
+        });
+    });
+
+    // Tests for getLatestNotification function.
+    describe('getLatestNotification', () => {
+        it('Should return the correct notification string', () => {
+            const expectedString = '<strong>Urgent requirement</strong> - complete by EOD';
+            expect(getLatestNotification()).toBe(expectedString);
+        });
+    });
 });

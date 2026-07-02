@@ -1,39 +1,107 @@
-import WithLogging from '../../components/HOC/WithLogging';
+// External libraries.
+import { useRef } from 'react';
+import { StyleSheet, css } from 'aphrodite';
+
+// Custom hooks.
 import useLogin from '../../hooks/useLogin';
 
-function Login({ logIn }) {
+const Login = (props) => {
+  // Extract login function from props with fallback.
+  const loginFunction = props.login || props.logIn || (() => { });
 
-  const {email, password, enableSubmit, handleChangeEmail, handleChangePassword, handleLoginSubmit} = useLogin(logIn);
+  // Use custom login hook for form state management.
+  const {
+    email,
+    password,
+    enableSubmit,
+    handleChangeEmail,
+    handleChangePassword,
+    handleLoginSubmit,
+  } = useLogin({ onLogin: loginFunction });
+
+  // Refs for input focus management.
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  // Component styles with responsive design.
+  const styles = StyleSheet.create({
+    AppBody: {
+      padding: '2rem',
+      flex: 1,
+    },
+    AppBodyP: {
+      marginBottom: '1rem',
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      gap: '1rem',
+      '@media (max-width: 900px)': {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '0.5rem',
+      },
+    },
+    formInput: {
+      padding: '0 0.25rem',
+    },
+    formButton: {
+      padding: '0 0.25rem',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
 
   return (
-    <div className='App-body flex-1 text-justify border-t border-t-[2.5px] border-t-[var(--main-color)]'>
-      <p className='ml-4 mt-4 mb-4'>Login to access the full dashboard</p>
+    <div className={`App-body ${css(styles.AppBody)}`}>
+      <p className={css(styles.AppBodyP)}>Login to access the full dashboard</p>
 
-      <form className='md:flex md:flex-row md:items-center' onSubmit={handleLoginSubmit} >
-        <div className='flex flex-col md:flex-row'>
-          <label className='mt-2 md:mt-0 ml-4' htmlFor="email">Email</label>
-          <input className='ml-4 w-3/5 md:w-auto border border-gray-400 px-1 rounded'
-            type="email" name="email" id="email" onChange={handleChangeEmail} value={email} />
-        </div>
+      <form role="form" aria-label="login form" className={css(styles.form)} onSubmit={handleLoginSubmit}>
+        <label
+          htmlFor="email"
+          onClick={() => emailRef.current && emailRef.current.focus()}
+        >
+          Email
+        </label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          ref={emailRef}
+          className={css(styles.formInput)}
+          value={email}
+          onChange={handleChangeEmail}
+        />
 
-        <div className='flex flex-col md:flex-row'>
-          <label className='mt-2 md:mt-0 ml-4' htmlFor="password">Password</label>
-          <input className='ml-4 w-3/5 md:w-auto border border-gray-400 px-1 rounded'
-            type="password" name="password" id="password" onChange={handleChangePassword} value={password} />
-        </div>
+        <label
+          htmlFor="password"
+          onClick={() => passwordRef.current && passwordRef.current.focus()}
+        >
+          Password
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          role="textbox"
+          ref={passwordRef}
+          className={css(styles.formInput)}
+          value={password}
+          onChange={handleChangePassword}
+        />
 
-        <input type='submit' disabled={!enableSubmit} value={'OK'}
-          className={`mt-2 md:mt-0 ml-4 border border-black px-2 cursor-pointer rounded ${enableSubmit ? 'opacity-100' : 'opacity-50'}`} />
+        <input
+          type="submit"
+          value="OK"
+          className={css(styles.formButton)}
+          disabled={!enableSubmit}
+        />
       </form>
     </div>
-  )
-}
+  );
+};
 
-Login.defaultProps = {
-  logIn: () => {}
-}
-
-
-const LoginWithLogging = WithLogging(Login);
-
-export default LoginWithLogging;
+export default Login;

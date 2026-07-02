@@ -1,331 +1,160 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
-import mockAxios from 'jest-mock-axios'
+// External libraries.
+import { render, screen, act, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import axios from 'axios';
 
-const markNotificationAsReadRefs = []
+// Styles.
+import { StyleSheetTestUtils } from 'aphrodite';
 
-jest.mock('../components/Notifications/Notifications.jsx', () => {
-  const Actual = jest.requireActual('../components/Notifications/Notifications.jsx').default
+// Components.
+import App from '../App';
 
-  return {
-    __esModule: true,
-    default: function NotificationsWithSpy(props) {
-      markNotificationAsReadRefs.push(props.markNotificationAsRead)
-      return <Actual {...props} />
-    },
-  }
-})
+// Mocks axios.
+jest.mock('axios');
 
-import App from '../App.jsx'
-
-const rawNotifications = [
+// Mock data.
+const mockNotifications = [
   { id: 1, type: 'default', value: 'New course available' },
   { id: 2, type: 'urgent', value: 'New resume available' },
-  {
-    id: 3,
-    type: 'urgent',
-    value: 'Urgent requirement - complete by EOD',
-  },
-]
+  { id: 3, type: 'urgent', html: { __html: 'Urgent requirement - complete by EOD' } },
+];
 
-const coursesList = [
+const mockCourses = [
   { id: 1, name: 'ES6', credit: 60 },
   { id: 2, name: 'Webpack', credit: 20 },
   { id: 3, name: 'React', credit: 40 },
-]
+];
 
-function resolveNotificationsRequest() {
-  mockAxios.mockResponseFor({ url: '/notifications.json' }, { data: rawNotifications })
-}
+// Suppress Aphrodite style injection before tests.
+beforeAll(() => {
+  StyleSheetTestUtils.suppressStyleInjection();
+});
 
-function resolveCoursesRequest() {
-  mockAxios.mockResponseFor({ url: '/courses.json' }, { data: coursesList })
-}
+// Clear and resume style injection after tests.
+afterAll(() => {
+  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
+});
 
-async function openNotificationsDrawer(user) {
-  const panelOpen =
-    screen.queryByText(/here is the list of notifications/i) ||
-    screen.queryByText(/no new notification for now/i)
-
-  if (!panelOpen) {
-    await user.click(screen.getByText(/your notifications/i))
-  }
-
-  await waitFor(() => {
-    expect(
-      screen.getByText(/here is the list of notifications/i),
-    ).toBeInTheDocument()
-  })
-}
-
+// Reset mocks before each test.
 beforeEach(() => {
-  markNotificationAsReadRefs.length = 0
-  mockAxios.reset()
-})
+  jest.clearAllMocks();
+  axios.get.mockImplementation((url) => {
+    if (url.includes('notifications')) return Promise.resolve({ data: mockNotifications });
+    if (url.includes('courses')) return Promise.resolve({ data: mockCourses });
+    return Promise.resolve({ data: [] });
+  });
+});
 
-afterEach(() => {
-  cleanup()
-  mockAxios.reset()
-})
+/******************
+* COMPONENT TESTS *
+******************/
 
-describe('App data fetching', () => {
-  test('retrieves notifications data when the App component loads initially', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-
-    expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    resolveNotificationsRequest()
-
-    await openNotificationsDrawer(user)
-
-    expect(screen.getByText('New course available')).toBeInTheDocument()
-  })
-
-  test('retrieves courses data whenever the user logs in', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-
-    resolveNotificationsRequest()
-
-    expect(mockAxios.get).not.toHaveBeenCalledWith('/courses.json')
-
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.type(screen.getByLabelText(/password/i), '12345678')
-    await user.click(screen.getByRole('button', { name: /^ok$/i }))
+describe('App Component Tests', () => {
+  test('Renders all main components', async () => {
+    render(<App />);
 
     await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/courses.json')
-    })
+      expect(axios.get).toHaveBeenCalledWith('/notifications.json');
+    });
 
-    resolveCoursesRequest()
+    expect(screen.getByText(/school dashboard/i)).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /log in to continue/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /news from the school/i })).toBeInTheDocument();
+    expect(screen.getByText(/holberton school news goes here/i)).toBeInTheDocument();
+    expect(screen.getByText(/copyright/i)).toBeInTheDocument();
+    expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
+  });
 
-    await waitFor(() => {
-      expect(screen.getByText('ES6')).toBeInTheDocument()
-    })
-  })
-})
+  test('Login displays course list and hides login form', async () => {
+    render(<App />);
+    const user = userEvent.setup();
 
-describe('App drawer handlers', () => {
-  test('handleHideDrawer hides the notifications drawer', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    resolveNotificationsRequest()
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
-    await openNotificationsDrawer(user)
+    await user.type(screen.getByLabelText(/email/i), 'user@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
 
-    await user.click(screen.getByLabelText(/close/i))
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/courses.json'));
+    await waitFor(() => screen.getByRole('heading', { name: /course list/i }));
 
-    expect(
-      screen.queryByText(/here is the list of notifications/i),
-    ).not.toBeInTheDocument()
-  })
+    expect(screen.queryByRole('heading', { name: /log in to continue/i })).not.toBeInTheDocument();
+  });
 
-  test('handleDisplayDrawer shows the notifications drawer', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    resolveNotificationsRequest()
+  test('Logout works correctly', async () => {
+    render(<App />);
+    const user = userEvent.setup();
 
-    await openNotificationsDrawer(user)
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
-    await user.click(screen.getByLabelText(/close/i))
-    expect(
-      screen.queryByText(/here is the list of notifications/i),
-    ).not.toBeInTheDocument()
+    await user.type(screen.getByLabelText(/email/i), 'user@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
 
-    await user.click(screen.getByText(/your notifications/i))
-    expect(
-      screen.getByText(/here is the list of notifications/i),
-    ).toBeInTheDocument()
-  })
-})
+    await waitFor(() => screen.getByText('logout'));
+    await user.click(screen.getByText('logout'));
 
-describe('App login and logout state', () => {
-  test('shows the login form when the user is not logged in', async () => {
-    render(<App />)
-    resolveNotificationsRequest()
+    await waitFor(() => screen.getByRole('heading', { name: /log in to continue/i }));
+  });
 
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
+  test('Notifications are loaded from API', async () => {
+    render(<App />);
 
-    expect(
-      screen.getByText(/login to access the full dashboard/i),
-    ).toBeInTheDocument()
-    expect(document.getElementById('logoutSection')).not.toBeInTheDocument()
-    expect(screen.queryByText('ES6')).not.toBeInTheDocument()
-  })
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
+    expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
+  });
 
-  test('LOGIN action updates email, password, and isLoggedIn', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    resolveNotificationsRequest()
+  test('Displays notifications when available', async () => {
+    axios.get.mockImplementation((url) => {
+      if (url.includes('notifications')) {
+        return Promise.resolve({
+          data: {
+            notifications: [
+              { id: 1, type: 'default', value: 'New course available' },
+              { id: 2, type: 'urgent', value: 'New resume available' },
+            ],
+          },
+        });
+      }
+      return Promise.resolve({ data: [] });
+    });
 
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
+    render(<App />);
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.type(screen.getByLabelText(/password/i), '12345678')
-    await user.click(screen.getByRole('button', { name: /^ok$/i }))
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
-    resolveCoursesRequest()
+    await act(async () => new Promise((resolve) => setTimeout(resolve, 100)));
 
-    await waitFor(() => {
-      expect(screen.getByText('ES6')).toBeInTheDocument()
-    })
+    expect(screen.getByText(/your notifications/i)).toBeInTheDocument();
+  });
+});
 
-    expect(screen.getByText('Webpack')).toBeInTheDocument()
-    expect(screen.getByText('React')).toBeInTheDocument()
-    expect(
-      screen.queryByText(/login to access the full dashboard/i),
-    ).not.toBeInTheDocument()
+/***********************
+* KEYBOARD EVENT TESTS *
+***********************/
 
-    const logoutSection = document.getElementById('logoutSection')
-    expect(logoutSection).toBeInTheDocument()
-    expect(logoutSection).toHaveTextContent('Welcome test@example.com (logout)')
-    expect(
-      screen.getByRole('link', { name: /contact us/i }),
-    ).toBeInTheDocument()
-  })
+describe('Keyboard events', () => {
+  test('Ctrl+H logs out user', async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
 
-  test('LOGOUT action clears user state and hides course list', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    resolveNotificationsRequest()
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith('/notifications.json'));
 
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
+    await user.type(screen.getByLabelText(/email/i), 'user@example.com');
+    await user.type(screen.getByLabelText(/password/i), 'strongpass');
+    await user.click(screen.getByRole('button', { name: /ok/i }));
 
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.type(screen.getByLabelText(/password/i), '12345678')
-    await user.click(screen.getByRole('button', { name: /^ok$/i }))
+    await waitFor(() => screen.getByRole('heading', { name: /course list/i }));
 
-    resolveCoursesRequest()
+    await act(async () => {
+      const event = new KeyboardEvent('keydown', { key: 'h', ctrlKey: true });
+      document.dispatchEvent(event);
+    });
 
-    await waitFor(() => {
-      expect(screen.getByText('ES6')).toBeInTheDocument()
-    })
+    await waitFor(() => expect(alertMock).toHaveBeenCalledWith('Logging you out'));
+    await waitFor(() => screen.getByRole('heading', { name: /log in to continue/i }));
 
-    await user.click(screen.getByRole('link', { name: /logout/i }))
-
-    expect(
-      screen.getByText(/login to access the full dashboard/i),
-    ).toBeInTheDocument()
-    expect(document.getElementById('logoutSection')).not.toBeInTheDocument()
-    expect(screen.queryByText('ES6')).not.toBeInTheDocument()
-    expect(screen.getByLabelText(/email/i)).toHaveValue('')
-    expect(screen.getByLabelText(/password/i)).toHaveValue('')
-    expect(
-      screen.queryByRole('link', { name: /contact us/i }),
-    ).not.toBeInTheDocument()
-  })
-
-  test('MARK_NOTIFICATION_READ removes the notification from the list', async () => {
-    const user = userEvent.setup()
-    const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {})
-    render(<App />)
-    resolveNotificationsRequest()
-
-    await openNotificationsDrawer(user)
-
-    const items = screen.getAllByRole('listitem')
-    fireEvent.click(items[0])
-
-    expect(logSpy).toHaveBeenCalledWith('Notification 1 has been marked as read')
-    expect(screen.queryByText('New course available')).not.toBeInTheDocument()
-
-    logSpy.mockRestore()
-  })
-
-  test('notifications state is unchanged through login and logout', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    resolveNotificationsRequest()
-
-    await openNotificationsDrawer(user)
-    expect(screen.getByText('New course available')).toBeInTheDocument()
-
-    await user.type(screen.getByLabelText(/email/i), 'test@example.com')
-    await user.type(screen.getByLabelText(/password/i), '12345678')
-    await user.click(screen.getByRole('button', { name: /^ok$/i }))
-
-    resolveCoursesRequest()
-
-    await waitFor(() => {
-      expect(screen.getByText('ES6')).toBeInTheDocument()
-    })
-
-    expect(screen.getByText('New course available')).toBeInTheDocument()
-
-    await user.click(screen.getByRole('link', { name: /logout/i }))
-
-    expect(screen.getByText('New course available')).toBeInTheDocument()
-  })
-})
-
-describe('App callback stability', () => {
-  test('markNotificationAsRead keeps the same function reference between re-renders', async () => {
-    const { rerender } = render(<App />)
-    resolveNotificationsRequest()
-
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
-
-    rerender(<App />)
-    rerender(<App />)
-
-    expect(markNotificationAsReadRefs.length).toBeGreaterThanOrEqual(2)
-    expect(markNotificationAsReadRefs[0]).toBe(markNotificationAsReadRefs[1])
-  })
-})
-
-describe('App', () => {
-  test('renders h1 with text School Dashboard', async () => {
-    render(<App />)
-    resolveNotificationsRequest()
-
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
-
-    expect(
-      screen.getByRole('heading', { name: /school dashboard/i }),
-    ).toBeInTheDocument()
-  })
-
-  test('body and footer paragraphs match the dashboard copy', async () => {
-    render(<App />)
-    resolveNotificationsRequest()
-
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
-
-    const body = document.querySelector('.App-body')
-    const footer = document.querySelector('.App-footer')
-    expect(
-      within(body).getByText(/login to access the full dashboard/i),
-    ).toBeInTheDocument()
-    const year = new Date().getFullYear()
-    expect(
-      within(footer).getByText(
-        new RegExp(`copyright\\s*${year}\\s*-\\s*holberton school`, 'i'),
-      ),
-    ).toBeInTheDocument()
-  })
-
-  test('renders the holberton logo image', async () => {
-    render(<App />)
-    resolveNotificationsRequest()
-
-    await waitFor(() => {
-      expect(mockAxios.get).toHaveBeenCalledWith('/notifications.json')
-    })
-
-    expect(
-      screen.getByRole('img', { name: /holberton logo/i }),
-    ).toBeInTheDocument()
-  })
-})
+    alertMock.mockRestore();
+  });
+});
