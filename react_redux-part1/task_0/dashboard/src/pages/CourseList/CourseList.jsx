@@ -1,79 +1,28 @@
-// External libraries.
-import { StyleSheet, css } from 'aphrodite';
-
-// Components.
-import CourseListRow from './CourseListRow/CourseListRow';
+import CourseListRow from "./CourseListRow/CourseListRow";
+import WithLogging from "../../components/HOC/WithLogging";
 
 function CourseList({ courses = [] }) {
-
-  // Styles.
-  const styles = StyleSheet.create({
-    CourseListContainer: {
-      width: '100%',
-      height: '100%',
-      flex: 1,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    CourseList: {
-      width: '100%',
-      borderCollapse: 'collapse',
-      ':nth-child(1n) th': {
-        textAlign: 'center',
-        padding: '0.20rem',
-        border: '1px solid black',
-      },
-      ':nth-child(1n) td': {
-        textAlign: 'left',
-        padding: '0.20rem',
-        border: '1px solid black',
-      },
-      ':nth-child(1n) th:first-child': { width: '60%' },
-      ':nth-child(1n) td:first-child': { width: '60%' },
-      ':nth-child(1n) th:last-child': { width: '40%' },
-      ':nth-child(1n) td:last-child': { width: '40%' },
-    },
-  });
-
-
-  //Render empty state.
-  if (courses.length === 0) {
-    return (
-      <div className={css(styles.CourseListContainer)}>
-        <table className={css(styles.CourseList)}>
+  return(
+    <div className="w-4/5 mx-auto py-20" id="CourseListContainer">
+      <table className="w-full border-collapse" id="CourseList">
+        {courses.length === 0 ? <tbody><CourseListRow isHeader={ true } textFirstCell='No course available yet' /></tbody>:
+        <>
+          <thead>
+            <CourseListRow isHeader={ true } textFirstCell='Available courses' />
+            <CourseListRow isHeader={ true } textFirstCell='Course name'  textSecondCell='Credit' />
+          </thead>
           <tbody>
-            <CourseListRow textFirstCell="No course available yet" />
+            {courses.map((course) => (
+              <CourseListRow key={course.id} textFirstCell={course.name} textSecondCell={course.credit} />
+            ))}
           </tbody>
-        </table>
-      </div>
-    );
-  }
-
-  //Render courses table.
-  return (
-    <div className={css(styles.CourseListContainer)}>
-      <table className={css(styles.CourseList)}>
-        <thead>
-          <CourseListRow textFirstCell="Available courses" isHeader={true} />
-          <CourseListRow
-            textFirstCell="Course name"
-            textSecondCell="Credit"
-            isHeader={true}
-          />
-        </thead>
-        <tbody>
-          {courses.map((course) => (
-            <CourseListRow
-              key={course.id}
-              textFirstCell={course.name}
-              textSecondCell={course.credit.toString()}
-            />
-          ))}
-        </tbody>
+        </>
+        }
       </table>
     </div>
-  );
+  )
 }
 
-export default CourseList;
+const CourseListWithLogging = WithLogging(CourseList)
+
+export default CourseListWithLogging;

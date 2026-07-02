@@ -1,18 +1,16 @@
-// Components.
 import { getCurrentYear, getFooterCopy } from '../../utils/utils';
 
 function Footer({ user }) {
+  const currentYear = getCurrentYear();
+  const footerText = getFooterCopy(true);
   return (
-    <footer className='App-footer' style={{ textAlign: 'center' }}>
+    <div className='App-footer text-center italic text-sm md:text-base border-t border-t-[2.5px] border-t-[var(--main-color)] mt-auto pb-8 pt-4'>
+      <p>Copyright {currentYear} - {footerText}</p>
       {user.isLoggedIn && (
-        <a href="#" aria-label="Contact us link">
-          contact us
-        </a>
+        <p><a href="#">Contact us</a></p>
       )}
-
-      <p style={{ marginTop: '0.5rem' }}>Copyright {getCurrentYear()} - {getFooterCopy(true)}</p>
-    </footer>
-  );
+    </div>
+  )
 }
 
 export default Footer;

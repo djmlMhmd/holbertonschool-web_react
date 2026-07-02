@@ -1,56 +1,34 @@
-// External libraries.
 import { useState } from 'react';
 
-// Custom hook for managing login form state and validation.
-const useLogin = ({ onLogin }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+// Déclaration de la constante emailRegex
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
+
+function useLogin(onLogin) {
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [enableSubmit, setEnableSubmit] = useState(false);
 
-  // Validates email format using regex.
-  const validateEmail = (value) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(value);
-  };
+  const handleLoginSubmit = (event) => {
+    event.preventDefault();
+    onLogin(formData.email, formData.password);
+  }
 
-  // Validates entire form based on email and password criteria.
-  const validateForm = (emailValue, passwordValue) => {
-    const emailOk = emailValue.length > 0 && validateEmail(emailValue);
-    const passwordOk = passwordValue.length >= 8;
-    return emailOk && passwordOk;
-  };
+  const handleChangeEmail = (event) => {
+    const newEmail = event.target.value;
+    setFormData({ email: newEmail, password: formData.password });
+    setEnableSubmit(emailRegex.test(newEmail) && formData.password.length >= 8);
+  }
 
-  // Handles email input change and validates form.
-  const handleChangeEmail = (e) => {
-    const emailValue = e.target.value;
-    setEmail(emailValue);
-    setEnableSubmit(validateForm(emailValue, password));
-  };
-
-  // Handles password input change and validates form.
-  const handleChangePassword = (e) => {
-    const passwordValue = e.target.value;
-    setPassword(passwordValue);
-    setEnableSubmit(validateForm(email, passwordValue));
-  };
-
-  // Handles form submission and calls onLogin callback.
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    if (typeof onLogin === 'function') {
-      onLogin(email, password);
-    }
-  };
-
-  // Return hook interface.
-  return {
-    email,
-    password,
-    enableSubmit,
+  const handleChangePassword = (event) => {
+    const newPassword = event.target.value;
+    setFormData({ email: formData.email, password: newPassword });
+    setEnableSubmit(newPassword.length >= 8 && emailRegex.test(formData.email));
+  }
+  return {email: formData.email,
+    password: formData.password,
+    enableSubmit: enableSubmit,
     handleChangeEmail,
     handleChangePassword,
-    handleLoginSubmit,
-  };
-};
+    handleLoginSubmit};
+}
 
 export default useLogin;

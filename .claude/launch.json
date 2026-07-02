@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "react_component-task5",
+      "name": "react_redux-p1-task0",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "react_component/task_5/dashboard", "--", "--port", "5199"],
+      "runtimeArgs": ["run", "dev", "--prefix", "react_redux-part1/task_0/dashboard", "--", "--port", "5199"],
       "port": 5199,
       "autoPort": false
     }

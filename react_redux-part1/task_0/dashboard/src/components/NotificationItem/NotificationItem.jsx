@@ -1,75 +1,20 @@
-// External libraries.
-import { memo, useRef } from 'react';
-import { StyleSheet, css } from 'aphrodite';
+import { memo } from "react";
 
-// Styles.
-const styles = StyleSheet.create({
-  default: {
-    color: 'blue',
-    cursor: 'pointer',
-  },
-  urgent: {
-    color: 'red',
-    cursor: 'pointer',
-  }
-});
-
-const NotificationItem = memo(({ type = 'default', html, value, id, markAsRead }) => {
-  // Ref for the list item element.
-  const liRef = useRef();
-
-  // Handles notification item click and marks as read.
-  const handleClick = () => {
-    if (markAsRead) {
-      markAsRead(id);
-    }
-  };
-
-  // Checks if a string contains HTML tags.
-  const containsHTML = (str) => {
-    return typeof str === 'string' && /<\/?[a-z][\s\S]*>/i.test(str);
-  };
-
-  // Determine style class based on notification type.
-  const styleClass = type === 'urgent' ? styles.urgent : styles.default;
-
-  // Render with HTML prop (dangerouslySetInnerHTML object).
-  if (html) {
-    return (
-      <li
-        ref={liRef}
-        className={css(styleClass)}
+function NotificationItem({ type, value, html, markAsRead, id }) {
+  return(
+    html ?
+      <li className={ type === 'default' ?
+        "text-[var(--default-notification-item)] border-b-2 border-gray-500 md:border-b-0 py-2 md:py-0 text-sm md:text-base pl-1 md:pl-0" :
+        "text-[var(--urgent-notification-item)] border-b-2 border-gray-500 md:border-b-0 py-2 md:py-0 text-sm md:text-base pl-1 md:pl-0" }
         data-notification-type={type}
-        dangerouslySetInnerHTML={html}
-        onClick={handleClick}
-      />
-    );
-  }
-
-  // Render with HTML string value.
-  if (value && containsHTML(value)) {
-    return (
-      <li
-        ref={liRef}
-        className={css(styleClass)}
+        dangerouslySetInnerHTML={{ __html: html }}
+        onClick={() => markAsRead(id)} />:
+      <li className={ type === 'default' ?
+        "text-[var(--default-notification-item)] border-b-2 border-gray-500 md:border-b-0 py-2 md:py-0 text-sm md:text-base pl-1 md:pl-0" :
+        "text-[var(--urgent-notification-item)] border-b-2 border-gray-500 md:border-b-0 py-2 md:py-0 text-sm md:text-base pl-1 md:pl-0" }
         data-notification-type={type}
-        dangerouslySetInnerHTML={{ __html: value }}
-        onClick={handleClick}
-      />
-    );
-  }
-
-  // Render with plain text value.
-  return (
-    <li
-      ref={liRef}
-      className={css(styleClass)}
-      data-notification-type={type}
-      onClick={handleClick}
-    >
-      {value}
-    </li>
+        onClick={() => markAsRead(id)}>{ value }</li>
   );
-});
+}
 
-export default NotificationItem;
+export default memo(NotificationItem);

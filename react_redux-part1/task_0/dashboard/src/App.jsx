@@ -1,155 +1,114 @@
-// External libraries.
-import { useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { StyleSheet, css } from 'aphrodite';
-
-// Utilities.
+import Notifications from './components/Notifications/Notifications.jsx';
+import Header from './components/Header/Header.jsx';
+import LoginForm from './pages/Login/Login.jsx';
+import CourseList from './pages/CourseList/CourseList.jsx';
+import Footer from './components/Footer/Footer.jsx';
+import BodySection from './components/BodySection/BodySection.jsx';
+import BodySectionWithMarginBottom from './components/BodySectionWithMarginBottom/BodySectionWithMarginBottom.jsx'
+import { APP_ACTIONS, initialState, appReducer } from './appReducer.js';
 import { getLatestNotification } from './utils/utils';
 
-// Reducer / State.
-import { APP_ACTIONS, appReducer, initialState } from './appReducer';
-
-// Components.
-import BodySection from './components/BodySection/BodySection';
-import BodySectionWithMarginBottom from './components/BodySectionWithMarginBottom/BodySectionWithMarginBottom';
-import CourseList from './pages/CourseList/CourseList';
-import Footer from './components/Footer/Footer';
-import Header from './components/Header/Header';
-import Login from './pages/Login/Login';
-import Notifications from './components/Notifications/Notifications';
-import WithLogging from './components/HOC/WithLogging';
-
-// HOCs with logging.
-const LoginWithLoggingHOC = WithLogging(Login);
-const CourseListWithLoggingHOC = WithLogging(CourseList);
-
-// Styles.
-const styles = StyleSheet.create({
-  appContainer: {
-    minHeight: '100vh',
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  mainBody: {
-    flex: 1,
-    padding: '1rem'
-  },
-  footerContainer: {
-    padding: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: '0.8rem',
-    fontWeight: 200,
-    fontStyle: 'italic',
-    borderTop: '0.25rem solid #e1003c'
-  },
-});
-
 function App() {
+  // Déclaration des différents states
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  // Notifications drawer.
-  const toggleNotificationsDrawer = useCallback(() => dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER }), []);
+  const handleDisplayDrawer = useCallback(() => {
+    dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
+  }, [dispatch]);
+  const handleHideDrawer = useCallback(() => {
+    dispatch({ type: APP_ACTIONS.TOGGLE_DRAWER });
+  }, [dispatch]);
 
-  // User authentication.
-  const handleLogin = useCallback((email, password) => {
-    dispatch({ type: APP_ACTIONS.LOGIN, payload: { email, password } });
-  }, []);
-
-  const handleLogout = useCallback(() => dispatch({ type: APP_ACTIONS.LOGOUT }), []);
-
-  // Notifications.
-  const markNotificationReadById = useCallback((id) => {
-    dispatch({ type: APP_ACTIONS.MARK_NOTIFICATION_READ, payload: id });
-  }, []);
-
-  // Keyboard shortcut (Ctrl + h).
-  const handleCtrlHKey = useCallback((event) => {
-    if (event.ctrlKey && event.key === 'h') {
-      alert('Logging you out');
-      handleLogout();
-    }
-  }, [handleLogout]);
-
-  // Fetch notifications.
   useEffect(() => {
-    const fetchNotifications = async () => {
+    const fetchNotificationsData = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/notifications.json');
-        const notificationsList = (res.data.notifications || res.data).map((notif) => {
-          if ((!notif.value && !notif.html) || notif.id === 3) {
-            return { ...notif, html: { __html: getLatestNotification() } };
+        const baseUrl = import.meta.env.BASE_URL || '/';
+        const response = await axios.get(`${baseUrl}notifications.json`);
+
+        const data = Array.isArray(response.data) ? response.data : (Array.isArray(response) ? response : []);
+        const transformedResponse = data.map((element, index, array) => {
+          if (index === array.length - 1) {
+            return { ...element, html: getLatestNotification() };
+          } else {
+            return element;
           }
-
-          return notif;
-        });
-        dispatch({ type: APP_ACTIONS.SET_NOTIFICATIONS, payload: notificationsList });
-      } catch (err) {
-        console.error('Error fetching notifications:', err);
+        })
+        dispatch({ type: APP_ACTIONS.SET_NOTIFICATIONS, payload: transformedResponse });
+      }
+      catch (error) {
+        console.error(error);
       }
     };
-
-    fetchNotifications();
+    fetchNotificationsData();
   }, []);
 
-  // Fetch courses if logged in.
   useEffect(() => {
-    const fetchCourses = async () => {
+    const fetchCoursesData = async () => {
       try {
-        const res = await axios.get('http://localhost:3000/courses.json');
-        const coursesList = res.data.courses || res.data;
+        const baseUrl = import.meta.env.BASE_URL || '/';
+        const response = await axios.get(`${baseUrl}courses.json`);
 
-        dispatch({ type: APP_ACTIONS.SET_COURSES, payload: coursesList });
-      } catch (err) {
-        console.error('Error fetching courses:', err);
+        const data = Array.isArray(response.data) ? response.data : Array.isArray(response) ? response : [];
+        dispatch({ type: APP_ACTIONS.SET_COURSES, payload: data });
+      }
+      catch (error) {
+        console.error(error);
       }
     };
-
-    if (state.user.isLoggedIn) fetchCourses();
+    fetchCoursesData();
   }, [state.user.isLoggedIn]);
 
-  // Keyboard event listener.
-  useEffect(() => {
-    document.addEventListener('keydown', handleCtrlHKey);
 
-    return () => document.removeEventListener('keydown', handleCtrlHKey);
-  }, [handleCtrlHKey]);
+  // Fonction logIn
+  const logIn = useCallback((email, password) => {
+    dispatch({ type: APP_ACTIONS.LOGIN, payload: { email, password } });
+  }, [dispatch]);
+
+
+  // Fonction logOut
+  const logOut = useCallback(() => {
+    dispatch({ type: APP_ACTIONS.LOGOUT });
+  }, [dispatch]);
+
+
+  // Fonction markNotificationAsRead
+  const markNotificationAsRead = useCallback((id) => {
+    console.log(`Notification ${id} has been marked as read`);
+    dispatch({ type: APP_ACTIONS.MARK_NOTIFICATION_READ, payload: id });
+  }, [dispatch]);
 
   return (
-    <div className={css(styles.appContainer)}>
-      <Notifications
-        notifications={state.notifications}
-        displayDrawer={state.displayDrawer}
-        handleDisplayDrawer={toggleNotificationsDrawer}
-        handleHideDrawer={toggleNotificationsDrawer}
-        markNotificationAsRead={markNotificationReadById}
-      />
-
-      <Header user={state.user} logOut={handleLogout} />
-
-      <div className={css(styles.mainBody)}>
-        {state.user.isLoggedIn ? (
-          <BodySectionWithMarginBottom title="Course list">
-            <CourseListWithLoggingHOC courses={state.courses} />
-          </BodySectionWithMarginBottom>
-        ) : (
-          <BodySectionWithMarginBottom title="Log in to continue">
-            <LoginWithLoggingHOC logIn={handleLogin} email={state.user.email} password={state.user.password} />
-          </BodySectionWithMarginBottom>
-        )}
-
-        <BodySection title="News from the School">
-          <p>Holberton School News goes here</p>
-        </BodySection>
+    <div className='flex flex-col min-h-screen'>
+      <div className="header flex md:justify-between flex-col-reverse md:flex-row md:items-center">
+        <div className="header-wrapper grow">
+          <Header user={state.user} logOut={logOut} />
+        </div>
+        <div className="root-notifications">
+          <Notifications notifications={state.notifications}
+            markNotificationAsRead={markNotificationAsRead}
+            displayDrawer={state.displayDrawer}
+            handleDisplayDrawer={handleDisplayDrawer}
+            handleHideDrawer={handleHideDrawer} />
+        </div>
       </div>
-
-      <div className={css(styles.footerContainer)}>
-        <Footer user={state.user} logOut={handleLogout} />
-      </div>
+      {state.user.isLoggedIn ?
+        <BodySectionWithMarginBottom title={'Course list'}>
+          <CourseList courses={state.courses} />
+        </BodySectionWithMarginBottom>:
+        <BodySectionWithMarginBottom title={'Log in to continue'}>
+          <LoginForm logIn={logIn} email={state.user.email} password={state.user.password} />
+        </BodySectionWithMarginBottom>
+      }
+      <BodySection title={'News from the School'}>
+        <p className='pl-4'>ipsum Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+          Similique, asperiores architecto blanditiis fuga doloribus sit illum aliquid ea distinctio
+          minus accusantium, impedit quo voluptatibus ut magni dicta. Recusandae, quia dicta?</p>
+      </BodySection>
+      <Footer user={state.user} />
     </div>
-  );
+  )
 }
 
 export default App;

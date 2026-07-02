@@ -1,29 +1,26 @@
-// External libraries.
 import { render, screen } from '@testing-library/react';
-import { StyleSheetTestUtils } from 'aphrodite';
-
-// Components.
 import Footer from './Footer';
 
-// Suppress Aphrodite style injection before tests.
-beforeEach(() => {
-  StyleSheetTestUtils.suppressStyleInjection();
-});
+describe('Footer component', () => {
+  test("Vérification que le texte de Copyright s'affiche, mais pas le link quand isLoggedIn est false.", () => {
+    render(
+      <Footer user={{ isLoggedIn: false }} />
+    );
+    const footerp = screen.getByText(/Copyright \d{4} - holberton School/i);
+    expect(footerp).toBeInTheDocument();
 
-// Clear and resume style injection after tests.
-afterAll(() => {
-  StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-});
+    const footerLink = screen.queryByRole('link', { name: /Contact us/i });
+    expect(footerLink).not.toBeInTheDocument();
+  });
 
-/******************
-* COMPONENT TESTS *
-******************/
+  test("Vérification que le texte de Copyright et le link s'affichent quand isLoggedIn est true.", () => {
+    render(
+        <Footer user= {{ isLoggedIn: true }} />
+    );
+    const footerp = screen.getByText(/Copyright \d{4} - holberton School/i);
+    expect(footerp).toBeInTheDocument();
 
-test('Renders correct copyright text', () => {
-  render(<Footer user={{ isLoggedIn: false }} />);
-
-  const currentYear = new Date().getFullYear();
-  const footerParagraph = screen.getByText(new RegExp(`copyright ${currentYear}.*holberton school`, 'i'));
-
-  expect(footerParagraph).toBeInTheDocument();
+    const footerLink = screen.queryByRole('link', { name: /Contact us/i });
+    expect(footerLink).toBeInTheDocument();
+  });
 });

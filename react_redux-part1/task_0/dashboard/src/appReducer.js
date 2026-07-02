@@ -1,80 +1,36 @@
-/***************
-* ACTION TYPES *
-***************/
-
-export const APP_ACTIONS = {
-  // Log in user.
+const APP_ACTIONS = {
   LOGIN: 'LOGIN',
-  // Log out user.                  
   LOGOUT: 'LOGOUT',
-  // Open/close notifications drawer.                     
   TOGGLE_DRAWER: 'TOGGLE_DRAWER',
-  // Remove notification by ID.       
   MARK_NOTIFICATION_READ: 'MARK_NOTIFICATION_READ',
-  // Set notifications list.
   SET_NOTIFICATIONS: 'SET_NOTIFICATIONS',
-  // Set courses list.
-  SET_COURSES: 'SET_COURSES',
+  SET_COURSES: 'SET_COURSES'
 };
 
-/****************
-* INITIAL STATE *
-****************/
-
-export const initialState = {
-  // Drawer is open by default.
-  displayDrawer: true,
-  // User credentials.           
+const initialState = {
+  displayDrawer: false,
   user: { email: '', password: '', isLoggedIn: false },
-  // Notifications array.
   notifications: [],
-  // Courses array.                    
-  courses: [],
+  courses: []
 };
 
-/**********
-* REDUCER *
-**********/
-
-export function appReducer(state = initialState, action) {
+function appReducer(state = initialState, action) {
   switch (action.type) {
-    case APP_ACTIONS.LOGIN:
-      // Log in the user with provided credentials.
-      return {
-        ...state,
-        user: { ...action.payload, isLoggedIn: true },
-      };
-
-    case APP_ACTIONS.LOGOUT:
-      // Log out user and clear courses.
-      return {
-        ...state,
-        user: { email: '', password: '', isLoggedIn: false },
-        courses: [],
-      };
-
-    case APP_ACTIONS.TOGGLE_DRAWER:
-      // Toggle the notifications drawer.
+    case 'LOGIN':
+      return { ...state, user: { email: action.payload.email, password: action.payload.password, isLoggedIn: true }};
+    case 'LOGOUT':
+      return { ...state, user: { email: '', password: '', isLoggedIn: false }, courses: []};
+    case 'TOGGLE_DRAWER':
       return { ...state, displayDrawer: !state.displayDrawer };
-
-    case APP_ACTIONS.MARK_NOTIFICATION_READ:
-      // Remove notification by ID.
-      return {
-        ...state,
-        notifications: state.notifications.filter(
-          (notif) => notif.id !== action.payload
-        ),
-      };
-
-    case APP_ACTIONS.SET_NOTIFICATIONS:
-      // Replace notifications array.
-      return { ...state, notifications: [...action.payload] };
-
-    case APP_ACTIONS.SET_COURSES:
-      // Replace courses array.
-      return { ...state, courses: [...action.payload] };
-
+    case 'MARK_NOTIFICATION_READ':
+      return { ...state, notifications: state.notifications.filter(item => item.id !== action.payload)};
+    case 'SET_NOTIFICATIONS':
+      return { ...state, notifications: action.payload };
+    case 'SET_COURSES':
+      return { ...state, courses: action.payload };
     default:
-      return state; // Return current state if action type is unknown.
+      return state;
   }
 }
+
+export { APP_ACTIONS, initialState, appReducer };
