@@ -80,7 +80,13 @@ function App() {
       try {
         const res = await axios.get('/notifications.json');
         const notificationsList = (res.data.notifications || res.data).map((notif) => {
-          if ((!notif.value && !notif.html) || notif.id === 3) {
+          // Normalize html strings into dangerouslySetInnerHTML objects.
+          if (typeof notif.html === 'string') {
+            return { ...notif, html: { __html: notif.html } };
+          }
+
+          // Fallback content when the notification has nothing to display.
+          if (!notif.value && !notif.html) {
             return { ...notif, html: { __html: getLatestNotification() } };
           }
 

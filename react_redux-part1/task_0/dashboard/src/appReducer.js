@@ -22,8 +22,8 @@ export const APP_ACTIONS = {
 ****************/
 
 export const initialState = {
-  // Drawer is closed by default.
-  displayDrawer: false,
+  // Drawer is open by default.
+  displayDrawer: true,
   // User credentials.           
   user: { email: '', password: '', isLoggedIn: false },
   // Notifications array.
