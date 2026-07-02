@@ -1,4 +1,4 @@
-.noti {
+.Notifications-container {
     width: 27%;
     position: absolute;
     right: 10px;
@@ -12,23 +12,25 @@
     font-weight: bold;
 }
 
+.menuItem p {
+    margin: 0;
+}
+
 .Notifications {
     border: 1px dashed red;
     padding: 15px;
     border-radius: 5px;
     position: relative;
-
-
 }
 
 .Notifications ul {
     margin: 20px 0 0 10px;
 }
 
-.Notifications ul li[data-notification-type="default"]{
-    color: blue
+.Notifications ul li[data-notification-type="default"] {
+    color: blue;
 }
 
-.Notifications ul li[data-notification-type="urgent"]{
-    color: red
+.Notifications ul li[data-notification-type="urgent"] {
+    color: red;
 }
