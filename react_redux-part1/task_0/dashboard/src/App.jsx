@@ -45,6 +45,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (!state.user.isLoggedIn) {
+      return;
+    }
+
     const fetchCoursesData = async () => {
       try {
         const baseUrl = import.meta.env.BASE_URL || '/';
