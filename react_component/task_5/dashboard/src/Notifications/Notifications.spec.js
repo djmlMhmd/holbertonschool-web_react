@@ -61,4 +61,34 @@ describe('Notifications component', () => {
         render(<Notifications notifications={notificationsList} displayDrawer={false} />);
         expect(screen.queryByText(/here is the list of notifications/i)).not.toBeInTheDocument();
     });
+
+    it('does not re-render when the length of the notifications prop stays the same', () => {
+        const { rerender } = render(<Notifications notifications={notificationsList} />);
+        expect(screen.getAllByRole('listitem')).toHaveLength(3);
+
+        const updatedSameLength = [
+            { id: 1, type: 'urgent', value: 'Updated first notification' },
+            { id: 2, type: 'default', value: 'Updated second notification' },
+            { id: 3, type: 'urgent', html: getLatestNotification() },
+        ];
+        rerender(<Notifications notifications={updatedSameLength} />);
+
+        // shouldComponentUpdate returned false: the DOM keeps the original content
+        expect(screen.getByText(/new course available/i)).toBeInTheDocument();
+        expect(screen.queryByText(/updated first notification/i)).not.toBeInTheDocument();
+    });
+
+    it('re-renders when the length of the notifications prop changes', () => {
+        const { rerender } = render(<Notifications notifications={notificationsList} />);
+        expect(screen.getAllByRole('listitem')).toHaveLength(3);
+
+        const longerList = [
+            ...notificationsList,
+            { id: 4, type: 'default', value: 'Brand new notification' },
+        ];
+        rerender(<Notifications notifications={longerList} />);
+
+        expect(screen.getAllByRole('listitem')).toHaveLength(4);
+        expect(screen.getByText(/brand new notification/i)).toBeInTheDocument();
+    });
 });
